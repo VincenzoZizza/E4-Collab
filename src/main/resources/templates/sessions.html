@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th='http://www.thymeleaf.org' lang='en'>
+
+<head th:insert="~{fragments/common::header('Dashboard')}">
+    <title>Dashboard</title>
+</head>
+
+<body>
+    <nav th:replace='~{fragments/common::navbar}'></nav>
+
+    <div id='main' class='d-table d-lg-grid'>
+        <div id='left-content' th:insert='~{fragments/datepicker::datepicker}'></div>
+        <div id='right-content'>
+            <div id='right-header'>
+                <h2>
+                    <span id='sessions-text'>Sessions</span>
+                    <span id='sessions-count' class='badge fs-6 rounded-pill text-bg-primary'>0</span>
+                </h2>
+                <h5 id='selected-date' class='text-secondary'></h5>
+            </div>
+            <div id='right-body' th:insert='~{fragments/sessions-table::sessions-table}'></div>
+        </div>
+    </div>
+    <div id='session-graph-modal' class='modal fade' tabindex='-1' data-bs-backdrop='static' data-bs-keyboard='false'>
+        <div class='modal-dialog modal-fullscreen p-5'>
+            <div class='modal-content'>
+                <div class='modal-header'>
+                    <h5 class='modal-title'>Modal title</h5>
+                    <button type='button' class='close' aria-label='Close' data-bs-dismiss='modal'>
+                        <span aria-hidden='true'>&times;</span>
+                    </button>
+                </div>
+                <div class='modal-body' th:insert='~{fragments/session-graph::session-graph}'>
+                    <p>Modal body text goes here.</p>
+                </div>
+                <!--            <div class='modal-footer'>-->
+                <!--            </div>-->
+            </div>
+        </div>
+    </div>
+    <div id="session-delete-modal" class="modal fade" tabindex="-1" aria-labelledby="session-delete-modal-label"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm Delete</h5>
+                    <button type='button' class='close' aria-label='Close' data-bs-dismiss='modal'>
+                        <span aria-hidden='true'>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this session?<br>This action cannot be undone.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                        id="cancelDeleteBtn">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script rel='preload' th:src='@{/js/utils.js}'></script>
+    <script th:inline='javascript'>
+        (async () => {
+            const currentUser = /*[[${user}]]*/ '';
+            const urlParams = new URLSearchParams(window.location.search);
+            const username = urlParams.get('user') ?? currentUser.username;
+
+
+            const sessionsTextLabel = document.getElementById('sessions-text');
+            const sessionsCountLabel = document.getElementById('sessions-count');
+            const selectedDateLabel = document.getElementById('selected-date');
+            const sessionsTable = document.getElementById('sessions-table');
+            const datepickerContainer = document.getElementById('datepicker-container');
+            const allSessionsButton = document.getElementById('datepicker-btn-all');
+            const sessionGraphModal = document.getElementById('session-graph-modal');
+            const sessionGraph = document.getElementById('session-graph');
+            const sessionDeleteModal = document.getElementById('session-delete-modal');
+
+            function showSessionGraph(sessionId) {
+                sessionGraphModal.querySelector('.modal-title').innerText = `Session ${sessionId}`;
+                utils.ensureHTMLElementVisible(sessionGraph).then(() => {
+                    sessionGraph.loadGraph(sessionId)
+                });
+                $(sessionGraphModal).modal('show');
+            }
+
+            function deleteSession(sessionId) {
+                return new Promise((resolve) => {
+                    sessionDeleteModal.querySelector('.modal-title').innerText = `Delete Session ${sessionId}`;
+                    sessionDeleteModal.querySelector('.modal-title').innerText = `Delete Session ${sessionId}`;
+                    sessionDeleteModal.querySelector('#cancelDeleteBtn').onclick = () => {
+                        $(sessionDeleteModal).modal('hide');
+                        resolve(false);
+                    };
+                    sessionDeleteModal.querySelector('#confirmDeleteBtn').onclick = async () => {
+                        await api.deleteSession(sessionId);
+                        $(sessionDeleteModal).modal('hide');
+                        resolve(true);
+                    };
+                    $(sessionDeleteModal).modal('show');
+                });
+            }
+
+            async function loadRange(range) {
+
+                const userSessions = await api.getUserSessions(username, range.from, range.to);
+
+                if (currentUser.username !== username) {
+                    sessionsTextLabel.textContent = `Session (${username})`;
+                }
+                else {
+                    sessionsTextLabel.textContent = 'Sessions'
+                }
+
+                sessionsCountLabel.textContent = userSessions.length;
+                selectedDateLabel.textContent = range.label;
+
+                sessionsTable.loadTable(userSessions, showSessionGraph, deleteSession);
+            }
+
+            datepickerContainer.addEventListener('changeDate', (e) => {
+                if(datepickerContainer.mode === 'none') {
+                    return;
+                }
+
+                const selectedDate = e.detail.date.valueOf();
+                const range = utils.getDateRange(selectedDate, datepickerContainer.mode, true);
+                loadRange(range);
+            });
+            allSessionsButton.addEventListener('click', (e) => loadRange({
+                from: 0,
+                to: new Date().valueOf(),
+                label: 'All Sessions'
+            }));
+
+            await loadRange(utils.getDateRange(new Date(), datepickerContainer.mode, false));
+
+            await datepickerContainer.loadDates(username);
+            datepickerContainer.datepicker.refresh({ forceRefresh: true });
+        })();
+    </script>
+    <div th:replace='~{fragments/common::footer}'></div>
+</body>
+
+</html>

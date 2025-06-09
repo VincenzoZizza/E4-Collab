@@ -1,0 +1,78 @@
+services:
+  backend:
+    container_name: backend
+    build:
+      context: ..
+      dockerfile: docker/backend/Dockerfile
+      args:
+        SPRING_PROFILE: backend,mysql
+    environment:
+      - SPRING_PROFILES_ACTIVE=backend,mysql
+      - SERVER_PORT=8081
+      #- SPRING_DATASOURCE_URL=jdbc:h2:file:./data/h2
+      #- SPRING_DATASOURCE_USERNAME=admin
+      #- SPRING_DATASOURCE_PASSWORD=admin
+    ports:
+      - "8081:8081"
+    networks:
+      - prog_evoluzione
+    volumes:
+      - backend-data:/app/data
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  frontend:
+    container_name: frontend
+    build:
+      context: ..
+      dockerfile: docker/frontend/Dockerfile
+      args:
+        SPRING_PROFILE: frontend,mysql
+    environment:
+      - SPRING_PROFILES_ACTIVE=frontend,mysql
+      #- SPRING_DATASOURCE_URL=jdbc:h2:file:./data/h2
+      #- SPRING_DATASOURCE_USERNAME=admin
+      #- SPRING_DATASOURCE_PASSWORD=admin
+    ports:
+      - "8080:8080"
+    networks:
+      - prog_evoluzione
+    depends_on:
+      backend:
+        condition: service_started
+      mysql:
+        condition: service_healthy
+
+  mysql:
+    container_name: mysql
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: e4collab
+      MYSQL_USER: e4user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - prog_evoluzione
+    command: --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-ppassword"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  backend-data:
+    name: backend-data
+  mysql-data:
+    name: mysql_data
+
+networks:
+  prog_evoluzione:
+    name: prog_evoluzione
+    driver: bridge

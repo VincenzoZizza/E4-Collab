@@ -91,4 +91,4 @@ Espone la porta 8080 per il rendering Thymeleaf/static
 
 **Matteo Passaro**
 
-*Esame Ingegneria del Software – Università degli Studi di Bari (2025)*
+*Esame Evoluzione del Software – Università degli Studi di Bari (2025)*

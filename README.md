@@ -90,6 +90,7 @@ Espone la porta 8080 per il rendering Thymeleaf/static
 # 📚 Autore
 
 **Matteo Passaro**
-[PROGETTO ORIGINALE]{https://github.com/collab-uniba/E4-Collab}
+
+[PROGETTO ORIGINALE](https://github.com/collab-uniba/E4-Collab)
 
 *Esame Evoluzione del Software – Università degli Studi di Bari (2025)*

@@ -1,20 +1,19 @@
-# ── STAGE 1: BUILD ─────────────────────────────────────────
-FROM gradle:8.0-jdk17 AS builder
-WORKDIR /app
-COPY . .
-RUN chmod +x ./gradlew
-RUN ./gradlew clean bootJar -x test --no-daemon
-
-# ── STAGE 2: RUNTIME ───────────────────────────────────────
-FROM eclipse-temurin:17-jre-jammy AS runtime
+FROM gradle:jdk17
 WORKDIR /app
 
-COPY --from=builder /app/build/libs/*.jar app.jar
+COPY src src
+COPY build.gradle.kts .
+COPY settings.gradle.kts .
+COPY gradle/libs.versions.toml gradle/libs.versions.toml
 
-# profilo backend e mysql di default
+# Build del progetto
+RUN gradle build -x test --no-daemon --stacktrace --info
+
+# Profilo backend e mysql di default
+VOLUME ["/app/data"]
+
 ARG SPRING_PROFILE=backend,mysql
 ENV SPRING_PROFILES_ACTIVE=${SPRING_PROFILE}
 
 EXPOSE 8081
-
-ENTRYPOINT ["java","-jar","app.jar"]
+ENTRYPOINT ["java", "-jar", "/app/build/libs/E4-Collab-1.0-SNAPSHOT.jar"]

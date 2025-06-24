@@ -9,6 +9,8 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=backend,mysql
       - SERVER_PORT=8081
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
       #- SPRING_DATASOURCE_URL=jdbc:h2:file:./data/h2
       #- SPRING_DATASOURCE_USERNAME=admin
       #- SPRING_DATASOURCE_PASSWORD=admin

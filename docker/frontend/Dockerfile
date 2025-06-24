@@ -1,19 +1,13 @@
-# STAGE 1: BUILD
-FROM gradle:8.0-jdk17 AS builder
+FROM gradle:jdk17 AS e4collab-backend-build
 WORKDIR /app
 
-COPY . .
+COPY src src
+COPY build.gradle.kts .
+COPY settings.gradle.kts .
+COPY gradle/libs.versions.toml gradle/libs.versions.toml
 
-RUN chmod +x ./gradlew
-
-# jar
-RUN ./gradlew clean bootJar -x test --no-daemon
-
-# STAGE 2: RUNTIME
-FROM eclipse-temurin:17-jre-jammy
-WORKDIR /app
-
-COPY --from=builder /app/build/libs/*.jar app.jar
+# Build del progetto
+RUN gradle build -x test --no-daemon --stacktrace --info
 
 # Profilo frontend e mysql
 ARG SPRING_PROFILE=frontend,mysql
@@ -21,4 +15,6 @@ ENV SPRING_PROFILES_ACTIVE=${SPRING_PROFILE}
 
 EXPOSE 8080
 
-ENTRYPOINT ["java","-jar","app.jar"]
+#VOLUME ["/app/data"]
+#ENTRYPOINT ["sleep", "infinity"]
+ENTRYPOINT ["java", "-jar", "/app/build/libs/E4-Collab-1.0-SNAPSHOT.jar"]

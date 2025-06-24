@@ -1,0 +1,16 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Start (mysql contanier)" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <option name="ACTIVE_PROFILES" value="mysql" />
+    <option name="ALTERNATIVE_JRE_PATH" value="17" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+    <envs>
+      <env name="SERVER_PORT" value="8081" />
+    </envs>
+    <module name="E4-Collab.main" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.example.e4_collab.Application" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+      <option name="RunConfigurationTask" enabled="true" run_configuration_name="[MySQL] Run" run_configuration_type="docker-deploy" />
+    </method>
+  </configuration>
+</component>

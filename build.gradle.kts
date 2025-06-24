@@ -1,12 +1,16 @@
 plugins {
     id("java")
-    id("org.springframework.boot") version "3.4.2"
-    id("io.spring.dependency-management") version "1.1.7"
+    alias(libs.plugins.springBoot) apply true
+    alias(libs.plugins.springDependencyManagement) apply true
 }
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
+
+    //toolchain {
+    //    languageVersion = JavaLanguageVersion.of(17)
+    //}
 }
 
 group = "org.example"
@@ -17,19 +21,30 @@ repositories {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.boot:spring-boot-starter-data-rest")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
-    implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("com.h2database:h2")
-    implementation("com.mysql:mysql-connector-j:8.2.0")  // Updated MySQL connector
-    
+    implementation(libs.springBootStarterWeb)
+    implementation(libs.springBootStarterDataRest)
+    implementation(libs.springBootStarterDataJPA)
+    implementation(libs.springBootStarterThymeleaf)
+    implementation(libs.springBootStarterSecurity)
+
+    implementation(libs.h2Database)
+    implementation(libs.mysqlConnector)
+
     // Additional dependencies for Spring Boot 3.4.2 compatibility
-    implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("jakarta.validation:jakarta.validation-api")
+    implementation(libs.springBootStarterValidation)
+    implementation(libs.jakartaValidation)
+
+    // Test dependencies
+    testImplementation(libs.springBootStarterTest)
+    testRuntimeOnly(libs.junitPlatform)
 }
 
-tasks.test {
-    useJUnitPlatform()
+tasks {
+    test {
+        useJUnitPlatform()
+    }
+
+    bootJar {
+        enabled = true
+    }
 }

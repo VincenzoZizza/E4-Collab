@@ -1,20 +1,23 @@
-.gradle
 build/
+.gradle
+.gradle/
+gradle/
 !gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+!gradle/libs.versions.toml
 !**/src/main/**/build/
 !**/src/test/**/build/
 
 ### IntelliJ IDEA ###
-.idea/modules.xml
-.idea/jarRepositories.xml
-.idea/compiler.xml
-.idea/libraries/
-*.iws
+idea-sandbox/
+.idea
 *.iml
-*.ipr
+gen
+ref/
 out/
-!**/src/main/**/out/
-!**/src/test/**/out/
+*.ipr
+*.iws
+.intellijPlatform/*
 
 ### Eclipse ###
 .apt_generated

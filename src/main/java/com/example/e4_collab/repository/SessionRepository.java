@@ -2,6 +2,8 @@ package com.example.e4_collab.repository;
 
 import com.example.e4_collab.entity.Session;
 import com.example.e4_collab.entity.User;
+
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -13,7 +15,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestResource(exported = false)
-public interface SessionRepository extends CrudRepository<Session, Long> {
+public interface SessionRepository extends JpaRepository<Session, Long> {
     Collection<Session> findAllByUser(User user);
     Collection<Session> findAllByUserAndStartTimestampIsBetween(User user, Long startTimestampAfter, Long startTimestampBefore);
 

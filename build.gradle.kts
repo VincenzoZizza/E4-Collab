@@ -26,8 +26,13 @@ dependencies {
     implementation(libs.springBootStarterDataJPA)
     implementation(libs.springBootStarterThymeleaf)
     implementation(libs.springBootStarterSecurity)
+    
+    compileOnly("org.projectlombok:lombok:1.18.38")
+	annotationProcessor("org.projectlombok:lombok:1.18.38")
+	
+	testCompileOnly("org.projectlombok:lombok:1.18.38")
+	testAnnotationProcessor("org.projectlombok:lombok:1.18.38")
 
-    implementation(libs.h2Database)
     implementation(libs.mysqlConnector)
 
     // Additional dependencies for Spring Boot 3.4.2 compatibility

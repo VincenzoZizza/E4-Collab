@@ -4,34 +4,19 @@ import Navbar from '@/components/Navbar.vue'
 import Datepicker from '@/components/Datepicker.vue'
 import { ref, onBeforeMount } from 'vue'
 
+import { useUserStore } from '@/stores/user.js';
+
 const route = useRoute()
 
-const dataIsReady = ref(false);
+const userStore = useUserStore();
 
-function dataReady()
-{
-  dataIsReady.value = true;
-}
-
-onBeforeMount(() => {
-  
-  if(route.name != 'Login')
-  {
-    dataIsReady.value = true;
-  }
-  else
-  {
-    dataIsReady.value = false;
-  }
-  //TODO attivare rotella caricamento
-});
 </script>
 
 <template >
-  <Navbar v-if="route.name != 'Login'" @isReady="dataReady()"/>
+  <Navbar v-if="route.name != 'Login'"/>
   <!--<Datepicker />-->
   <div class="d-flex justify-content-center align-items-center bg-light">
-  <RouterView v-if="dataIsReady"/>
+  <RouterView v-if="userStore.renderView"/>
   </div>
 </template>
 

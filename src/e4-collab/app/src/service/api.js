@@ -7,26 +7,13 @@ import axiosConf from '@/service/axios.js';
 const cryptKey = "irKUdHRurUbEEVCKCcgOnG1CzhQ9whfGwDt4xRyylooSLscpBhD6h5ovvRWNuJCcnhMft0kui6jKwfSFhzTZOEiL2i4CZKj"
 
 export const getUserSessions = async function (username, from, to) {
-			let uri = `/api/users/${username}/sessions`;
-			let query = [];
-			if (from != null) query.push(`from=${from.valueOf()}`);
-			if (to != null) query.push(`to=${to.valueOf()}`);
-			if (query.length) uri += '?' + query.join('&');
+			let uri = `/security/users/${username}/sessions`;
+			let params= {};
+			if (from != null) params.from=from.valueOf();
+			if (to != null) params.to=to.valueOf();
 
-			const response = await fetch(uri, {
-				method: 'GET',
-				headers: {
-					'Accept': 'application/json',
-				}
-			});
-
-			if (response.ok) {
-				return response.json();
-			} else {
-				let message = 'Failed to fetch sessions';
-				if (response.reason) message += `: ${response.reason}`;
-				throw new Error(message);
-			}
+			const response = await axiosConf.get("/security/users/"+username+"/sessions", {params:params});
+			return response;
 		}
 
 export const getUserSessionsIds = async function (username, from, to) {

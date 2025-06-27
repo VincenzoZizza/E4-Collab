@@ -1,5 +1,11 @@
+import * as d3 from "d3";
 
-        function aggregateData(data, roundingIntervalSeconds = 10, attributeNameX = "x", attributeNameY = "y") {
+import { svgPathProperties } from 'svg-path-properties'
+
+
+let aggregatedData = null;
+
+        function aggregateData(data, roundingIntervalSeconds, attributeNameX, attributeNameY) {
             if (!data || data.length === 0) {
                 return [];
             }
@@ -8,7 +14,7 @@
                 return data;
             }
 
-            const aggregatedData = Array.from(d3.rollup(
+            aggregatedData = Array.from(d3.rollup(
                 data,
                 v => ({
                     x: new Date(d3.mean(v, d => d[attributeNameX])),
@@ -396,7 +402,7 @@
                 chartGroup.attr("width", width).attr("height", height);
                 clipRect.attr("width", width).attr("height", height);
                 path.datum(aggregatedData).attr("d", line);
-                path.pathProperties = window.svgPathProperties.svgPathProperties(path.attr("d"));
+                path.pathProperties = svgPathProperties(path.attr("d"));
 
                 focus.attr("y1", 0).attr("y2", height);
 
@@ -417,6 +423,7 @@
             createChart(prepareSvgElements, onMousemove, onMouseout, onSizeChange);
         }
         export const createPieChart = function (data, svgElement, tooltipContainerElement = null, tooltipLabelElement = null) {
+            console.log(d3);
             const prepareSvgElements = () => {
                 const svg = d3.select(svgElement);
                 const chartGroup = svg.append("g");
@@ -603,12 +610,20 @@
                     .append("rect");
 
                 const paths = sensorsData.map((sensorData, i) => {
-                    return chartGroup.append("path")
+                    const path = chartGroup.append("path")
                         .attr("class", "line")
                         .attr("fill", "none")
                         .attr("stroke", "#143D59")
                         .attr("stroke-width", 2)
                         .attr("clip-path", "url(#clip)");
+
+                        const d = someLineGenerator(sensorData.data)
+                        path.attr("d", d)
+
+                        const dValue = path.attr("d")
+                        console.log('Valore d:', dValue)
+
+                        return path
                 });
 
                 const xAxis = chartGroup.append("g");
@@ -758,7 +773,7 @@
                 chartGroup.attr("width", width).attr("height", height);
                 clipRect.attr("width", width).attr("height", height);
                 paths.forEach((path, i) => path.datum(aggregatedSensorsData[i]).attr("d", lines[i]).attr("stroke", pathsColors[i]));
-                paths.forEach((path, i) => path.pathProperties = window.svgPathProperties.svgPathProperties(path.attr("d")));
+                paths.forEach((path, i) => path.pathProperties = svgPathProperties(path.attr("d")));
                 paths.forEach((path, i) => path.attr("transform", `translate(0,${pathHeight * i})`));
 
                 // text-anchor: middle;

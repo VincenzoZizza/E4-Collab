@@ -9,8 +9,10 @@ import './assets/base.css'
 import "bootstrap/dist/css/bootstrap.min.css"
 import '@fortawesome/fontawesome-free/css/all.min.css'
 import "bootstrap"
+import "vue-data-ui/style.css" 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+
 
 import App from './App.vue'
 import router from './router'

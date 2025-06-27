@@ -122,7 +122,7 @@ public class UserController {
     
     @GetMapping("/checkSession")
     public ResponseEntity<?> checkSession(@AuthenticationPrincipal CustomUserDetail principal) {
-    	if(principal.getUsername() != null && principal.getRole() != null)
+    	if(principal != null && principal.getUsername() != null && principal.getRole() != null)
     	{
             UserJSON user = new UserJSON();
             user.setUsername(principal.getUsername());
@@ -176,7 +176,7 @@ public class UserController {
         userService.setUserRole(user, userRole);
     }
 
-    @GetMapping("/api/users/{username}/sessions")
+    @GetMapping("/users/{username}/sessions")
     @Transactional
     public Collection<Session> getUserSessions(@AuthenticationPrincipal CustomUserDetail principal, @PathVariable("username") String username, @RequestParam(value = "from", required = false) Long from, @RequestParam(value = "to", required = false) Long to) {
         User user = checkAccessAndGetUser(principal, username);

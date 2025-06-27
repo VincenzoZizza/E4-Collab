@@ -15,10 +15,10 @@
         <div class='collapse navbar-collapse' id='navbarSupportedContent'>
             <ul class='navbar-nav me-auto mb-2 mb-lg-0'>
                 <li class='nav-item'>
-                    <a class='nav-link' aria-current='page' href='/'>Dashboard</a>
+                    <RouterLink to="/dashboard">Dashboard</RouterLink>
                 </li>
                 <li class='nav-item'>
-                    <a class='nav-link' aria-current='page' href='/sessions'>Sessions</a>
+                   <RouterLink to='/sessions'>Sessions</RouterLink>
                 </li>
                 <li class='nav-item'>
                    <!-- th:if="${session?.SPRING_SECURITY_CONTEXT?.authentication?.authorities != null && (#lists.contains(session.SPRING_SECURITY_CONTEXT.authentication.authorities.![authority], 'ROLE_EDITOR') || #lists.contains(session.SPRING_SECURITY_CONTEXT.authentication.authorities.![authority], 'ROLE_ADMIN'))}">-->
@@ -31,12 +31,12 @@
 </template>
 <script setup>
 
-import collabLogo from "@/assets/collab_bianco.svg";
+import collabLogo from "@/assets/collab_bianco.svg";7
 import { onMounted, defineEmits } from 'vue'
 import { checkSession } from '@/service/api.js';
 import { useUserStore } from '@/stores/user.js';
 
-import { useRouter } from 'vue-router'
+import { useRouter, RouterLink } from 'vue-router'
 
 const router = useRouter()
 
@@ -45,21 +45,22 @@ const userStore = useUserStore();
 const emit = defineEmits(['isReady']);
 
 onMounted(() => {
+    userStore.setRenderView(false)
   checkSession().then(response => {
         if (response.status === 200) {
             userStore.setUser(response.data.username, response.data.role);
             console.log("Login successful");
-            emit('isReady');
+            userStore.setRenderView(true)
             router.push("/dashboard");
         } else {
             userStore.setUser("", 0);
-            emit('isReady');
+            userStore.setRenderView(true)
             alert("Sessione scaduta! Rieffettuare il login.")
             router.push("/");
         }
     }).catch(error => {
         console.error("Login failed:", error);
-        emit('dataReady');
+        userStore.setRenderView(true)
         alert("Errore interno.")
         router.push("/");
     })

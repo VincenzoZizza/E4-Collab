@@ -5,6 +5,7 @@ import com.example.e4_collab.dto.SessionZipDto;
 import com.example.e4_collab.entity.Session;
 import com.example.e4_collab.entity.User;
 import com.example.e4_collab.enums.UserRole;
+import com.example.e4_collab.security.CustomUserDetail;
 import com.example.e4_collab.service.SessionService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,14 +36,14 @@ public class SessionController {
     }
 
     @GetMapping(path = "/api/sessions/{id}")
-    public AggregatedSessionDataDto getSession(@AuthenticationPrincipal User principal, @PathVariable("id") Long sessionId) {
+    public AggregatedSessionDataDto getSession(@AuthenticationPrincipal CustomUserDetail principal, @PathVariable("id") Long sessionId) {
         Session session = checkAccessAndGetSession(principal, sessionId);
         return sessionService.getAggregatedSessionData(session);
     }
 
     @DeleteMapping(path = "/api/sessions/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteSession(@AuthenticationPrincipal User principal, @PathVariable("id") Long sessionId) {
+    public void deleteSession(@AuthenticationPrincipal CustomUserDetail principal, @PathVariable("id") Long sessionId) {
         if(principal != null && principal.getRole().equals(UserRole.ROLE_USER)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
@@ -52,7 +53,7 @@ public class SessionController {
     }
 
     @PostMapping
-    public Session uploadSession(@AuthenticationPrincipal User principal, @RequestBody SessionZipDto sessionZip) {
+    public Session uploadSession(@AuthenticationPrincipal CustomUserDetail principal, @RequestBody SessionZipDto sessionZip) {
         if (sessionZip.getStartTimestamp() == null || sessionZip.getEndTimestamp() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Start timestamp and end timestamp cannot be null");
         }
@@ -87,7 +88,7 @@ public class SessionController {
     }
 
     @GetMapping(path = "/api/sessions/{id}/download")
-    public SessionZipDto downloadZip(@AuthenticationPrincipal User principal, @PathVariable("id") Long sessionId) {
+    public SessionZipDto downloadZip(@AuthenticationPrincipal CustomUserDetail principal, @PathVariable("id") Long sessionId) {
         if(principal != null && principal.getRole().equals(UserRole.ROLE_USER)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
@@ -121,15 +122,15 @@ public class SessionController {
         return response;
     }
 
-    private boolean hasAccess(User principal, String username) {
-        return principal != null && (principal.getRole() == UserRole.ROLE_ADMIN || principal.getRole() == UserRole.ROLE_EDITOR || principal.getUsername().equals(username));
+    private boolean hasAccess(CustomUserDetail principal, String username) {
+        return principal != null && (principal.getRole() == UserRole.ROLE_ADMIN.getValue() || principal.getRole() == UserRole.ROLE_EDITOR.getValue() || principal.getUsername().equals(username));
     }
 
-    private boolean hasAccess(User principal, Session session) {
+    private boolean hasAccess(CustomUserDetail principal, Session session) {
         return hasAccess(principal, session.getUsername());
     }
 
-    private Session checkAccessAndGetSession(User principal, Long sessionId) {
+    private Session checkAccessAndGetSession(CustomUserDetail principal, Long sessionId) {
         Session session = sessionService.getSession(sessionId);
         if (session == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Session not found");

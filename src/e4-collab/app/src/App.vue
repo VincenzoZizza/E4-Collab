@@ -1,14 +1,38 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterLink, RouterView, useRoute } from 'vue-router'
 import Navbar from '@/components/Navbar.vue'
 import Datepicker from '@/components/Datepicker.vue'
+import { ref, onBeforeMount } from 'vue'
+
+const route = useRoute()
+
+const dataIsReady = ref(false);
+
+function dataReady()
+{
+  dataIsReady.value = true;
+}
+
+onBeforeMount(() => {
+  
+  if(route.name != 'Login')
+  {
+    dataIsReady.value = true;
+  }
+  else
+  {
+    dataIsReady.value = false;
+  }
+  //TODO attivare rotella caricamento
+});
 </script>
 
-<template class="d-flex justify-content-center align-items-center vh-100 bg-light">
-  <!--<Navbar />
-  <Datepicker />-->
-
-  <RouterView />
+<template >
+  <Navbar v-if="route.name != 'Login'" @isReady="dataReady()"/>
+  <!--<Datepicker />-->
+  <div class="d-flex justify-content-center align-items-center bg-light">
+  <RouterView v-if="dataIsReady"/>
+  </div>
 </template>
 
 <style scoped>

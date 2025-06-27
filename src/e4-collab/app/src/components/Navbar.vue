@@ -1,5 +1,5 @@
 <template>
-<nav id='navbar' class='navbar navbar-expand-sm navbar-dark'>
+<nav id='navbar' class='navbar navbar-expand-sm navbar-dark' style="margin: 0;">
     <div class='container-fluid'>
         <a class='navbar-brand' href='/'>
             <img :src='collabLogo' alt='logo'>
@@ -32,6 +32,38 @@
 <script setup>
 
 import collabLogo from "@/assets/collab_bianco.svg";
+import { onMounted, defineEmits } from 'vue'
+import { checkSession } from '@/service/api.js';
+import { useUserStore } from '@/stores/user.js';
+
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+const userStore = useUserStore();
+
+const emit = defineEmits(['isReady']);
+
+onMounted(() => {
+  checkSession().then(response => {
+        if (response.status === 200) {
+            userStore.setUser(response.data.username, response.data.role);
+            console.log("Login successful");
+            emit('isReady');
+            router.push("/dashboard");
+        } else {
+            userStore.setUser("", 0);
+            emit('isReady');
+            alert("Sessione scaduta! Rieffettuare il login.")
+            router.push("/");
+        }
+    }).catch(error => {
+        console.error("Login failed:", error);
+        emit('dataReady');
+        alert("Errore interno.")
+        router.push("/");
+    })
+})
         /*const currentUri = window.location.pathname;
         const navbar = document.getElementById('navbar');
         const navbarLinks = Array.from(navbar.getElementsByClassName('nav-link'));

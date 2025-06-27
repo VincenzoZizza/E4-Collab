@@ -8,13 +8,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RestResource;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
-@RestResource(exported = false)
+@Repository
 public interface SessionRepository extends JpaRepository<Session, Long> {
     Collection<Session> findAllByUser(User user);
     Collection<Session> findAllByUserAndStartTimestampIsBetween(User user, Long startTimestampAfter, Long startTimestampBefore);

@@ -31,12 +31,12 @@ public class User implements UserDetails {
     private Set<Authority> authorities = new HashSet<>();
 
     @JsonProperty("role")
-    public UserRole getRole() {
+    public Integer getRole() {
         Authority authority = this.authorities.stream().findFirst().orElse(null);
         if(authority != null) {
-            return authority.getUserRole();
+            return authority.getUserRole().getValue();
         }
-        return UserRole.ROLE_USER;
+        return UserRole.ROLE_USER.getValue();
     }
 
     @JsonIgnore

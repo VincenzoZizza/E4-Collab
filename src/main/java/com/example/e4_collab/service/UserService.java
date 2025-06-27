@@ -17,17 +17,17 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserService {
 
     private final UserRepository userRepository;
     private final AuthorityService authorityService;
     private final PasswordEncoder passwordEncoder;
     private final SessionRepository sessionRepository;
 
-    @Override
+    /*@Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return getUser(username);
-    }
+    }*/
 
     @Autowired
     public UserService(UserRepository userRepository, AuthorityService authorityService, PasswordEncoder passwordEncoder, SessionRepository sessionRepository) {
@@ -37,6 +37,14 @@ public class UserService implements UserDetailsService {
         this.sessionRepository = sessionRepository;
     }
 
+    public String encryptPassword(String password) {
+		return passwordEncoder.encode(password);
+	}
+
+	public boolean isPasswordValid(String rawPassword, String encodedPassword) {
+		return passwordEncoder.matches(rawPassword, encodedPassword);
+	}
+    
     @Transactional
     public User createUser(String username, String email, String password, UserRole userRole) {
         if (!isValidUsername(username) || !isValidEmail(email) || !isValidPassword(password)) {
@@ -54,6 +62,10 @@ public class UserService implements UserDetailsService {
         if (userRole != null) {
             setUserRole(user, userRole);
         }
+        else
+        {
+			setUserRole(user, UserRole.ROLE_USER);
+		}
 
         refreshAccessToken(user);
         return user;

@@ -43,6 +43,7 @@ import { getUserSummary } from '@/service/api.js'
 import DashboardCard from '@/components/DashboardCard.vue'
 import ChartCard from '@/components/ChartCard.vue'
 import TooltipBox from '@/components/TooltipBox.vue'
+import Navbar from '@/components/Navbar.vue'
 
 const userStore = useUserStore()
 const userSummary = ref({

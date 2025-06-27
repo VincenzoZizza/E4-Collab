@@ -25,7 +25,7 @@ public class AuthorityService {
 
     @Transactional
     public void setUserAuthority(User user, UserRole userRole) {
-        if(user.getRole() != userRole) {
+        if(user.getRole() != userRole.getValue()) {
             authorityRepository.deleteAuthorityByUser(user);
             authorityRepository.save(new Authority(user, userRole));
         }

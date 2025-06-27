@@ -1,6 +1,7 @@
 package com.example.e4_collab.controller;
 
 import com.example.e4_collab.entity.User;
+import com.example.e4_collab.security.CustomUserDetail;
 import com.example.e4_collab.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.MediaType;
@@ -22,7 +23,7 @@ public class WebController {
     }
 
     @GetMapping(value = "/", produces = MediaType.TEXT_HTML_VALUE)
-    public String index(@AuthenticationPrincipal User principal, Model model, HttpServletRequest request) {
+    public String index(@AuthenticationPrincipal CustomUserDetail principal, Model model, HttpServletRequest request) {
         model.addAttribute("user", principal);
         model.addAttribute("username", principal.getUsername());
 
@@ -30,7 +31,7 @@ public class WebController {
     }
 
     @GetMapping(value = "/sessions", produces = MediaType.TEXT_HTML_VALUE)
-    public String sessions(@AuthenticationPrincipal User principal, Model model, HttpServletRequest request) {
+    public String sessions(@AuthenticationPrincipal CustomUserDetail principal, Model model, HttpServletRequest request) {
         String username = request.getParameter("user");
 
         if (username != null) {
@@ -48,7 +49,7 @@ public class WebController {
     }
 
     @GetMapping(value = "/users", produces = MediaType.TEXT_HTML_VALUE)
-    public String users(@AuthenticationPrincipal User principal, Model model, HttpServletRequest request) {
+    public String users(@AuthenticationPrincipal CustomUserDetail principal, Model model, HttpServletRequest request) {
         model.addAttribute("user", principal);
         model.addAttribute("username", principal.getUsername());
         return "users";
@@ -56,7 +57,7 @@ public class WebController {
 
 
     @GetMapping(value = "/login", produces = MediaType.TEXT_HTML_VALUE)
-    public String login(@AuthenticationPrincipal User principal, Model model) {
+    public String login(@AuthenticationPrincipal CustomUserDetail principal, Model model) {
 
         if (principal == null) {
             return "login";
@@ -65,7 +66,7 @@ public class WebController {
     }
 
     @GetMapping(value = "/logout", produces = MediaType.TEXT_HTML_VALUE)
-    public String logout(@AuthenticationPrincipal User principal) {
+    public String logout(@AuthenticationPrincipal CustomUserDetail principal) {
 
         if (principal == null) {
             return "redirect:/login";
@@ -74,7 +75,7 @@ public class WebController {
     }
 
     @GetMapping(value = "/signup", produces = MediaType.TEXT_HTML_VALUE)
-    public String signup(@AuthenticationPrincipal User principal, Model model) {
+    public String signup(@AuthenticationPrincipal CustomUserDetail principal, Model model) {
         if (principal == null) {
             return "signup";
         }

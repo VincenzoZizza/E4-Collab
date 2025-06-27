@@ -135,6 +135,12 @@ export const getUserSessionsIds = async function (username, from, to) {
 			return response
 		}
 
+		export const checkSession = async function () {
+			const response = await axiosConf.get("/security/checkSession")
+
+			return response
+		}
+
 		export const signUpRest = async function (username, password, email) {
 
 			let cryptPass = CryptoJS.AES.encrypt(password, cryptKey).toString();

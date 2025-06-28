@@ -41,7 +41,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick, defineProps , defineEmits} from 'vue';
+import { ref, onMounted, nextTick, defineProps , defineEmits, defineExpose} from 'vue';
 import Datepicker from 'vanillajs-datepicker/Datepicker';
 import * as api from '@/service/api.js';
 import * as utils from '@/service/utils.js';
@@ -157,6 +157,17 @@ onMounted(async () => {
   loadDates().then(() => {
     datepicker.value.picker.changeView(0).render();
   })
+});
+
+function reload()
+{
+  loadDates().then(() => {
+    datepicker.value.picker.changeView(0).render();
+  })
+}
+
+defineExpose({
+  reload
 });
 </script>
 

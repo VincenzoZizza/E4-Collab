@@ -26,17 +26,17 @@ export const getUserSessionsIds = async function (username, from, to) {
 		}
 
 		export const downloadSessionZip = async function (sessionId) {
-			const response = await fetch(`/api/sessions/${sessionId}/download`, {
-				method: 'GET'
-			});
 
-			if (!response.ok) {
+			const response = await axiosConf.get("/api/sessions/"+sessionId+"/download");
+
+			console.log(response)
+			
+			if (response.status > 300) {
 				let message = `Failed to download session zip {sessionId}`;
-				if (response.reason) message += `: ${response.reason}`;
 				throw new Error(message);
 			}
 
-			const data = await response.json();
+			const data = await response.data;
 
 			const a = document.createElement('a');
 			a.download = data.id + '_' + data.startTimestamp + '.zip';
@@ -49,15 +49,8 @@ export const getUserSessionsIds = async function (username, from, to) {
 		}
 
 		export const deleteSession = async function (sessionId) {
-			const response = await fetch(`/api/sessions/${sessionId}`, {
-				method: 'DELETE'
-			});
-
-			if (!response.ok) {
-				let message = `Failed to delete session {sessionId}`;
-				if (response.reason) message += `: ${response.reason}`;
-				throw new Error(message);
-			}
+			const response = await axiosConf.delete("/api/sessions/"+sessionId);
+			return response;
 		}
 
 		export const getUsers = async function () {

@@ -21,6 +21,15 @@ import * as api from '@/service/api.js';
 import * as chart from '@/service/chart.js';
 import Plotly from '@aurium/vue-plotly'
 
+const edaRef = ref({})
+const bvpRef = ref({})
+const accRef = ref({})
+const ibiRef = ref({})
+const tempRef = ref({}) 
+const tagsRef = ref({})
+
+const signals = ref([]);
+
 const sessionGraphRef = ref(null);
 
 const props = defineProps({ sessionId: Number });
@@ -86,7 +95,6 @@ onMounted(() => {
 })
 
 async function loadGraph(sessionId) {
-  const areaChart = document.getElementById('areaChart');
   const session = await api.getSession(sessionId);
 
   const eda = parseSensorData(session.startTimestamp, session.edaData, session.edaSampleRate);
@@ -99,90 +107,58 @@ async function loadGraph(sessionId) {
   const sensors = [eda, bvp, acc, ibi, temp];
 
   console.log(sensors)
+  
+  edaRef.value.x = eda.map(v => v.x)
+  edaRef.value.y = eda.map(v => v.y)
 
-  const defaultDomainsY = [[], [0, 2], [-1000, 1000], [-2, 2], [25, 40]];
-  const roundIntervals = [0.3, null, 1, 3, 5];
-  const curves = [null, null, d3.curveScale, d3.curveCatmullRom.alpha(0.3), d3.curveCatmullRom.alpha(1)];
-  const titles = ['EDA (μS)', 'BVP', 'Accelerometer (g)', 'HR from IBI (BPM)', 'Temperature (°C)'];
-  const colors = ['#76b5c5', '#a0312e', '#755c91', '#da8038', '#87a34b'];
-  const ticksColors = ['#f0ffff', '#fff0f0', '#e4dbf0', '#fff0e5', '#f5fff0'];
-  const tagsColor = '#b50a3b';
+  bvpRef.value.x = bvp.map(v => v.x)
+  bvpRef.value.y = bvp.map(v => v.y)
 
-  const domainsY = sensors.map((d, i) => d?.length ? null : defaultDomainsY[i]);
-  const fromDate = new Date(session.startTimestamp);
-  const maxDate = new Date(Math.max(...(sensors[0].map(p => p.x.getTime()))));
-  const domainX = [fromDate, maxDate];
+  accRef.value.x = acc.map(v => v.x)
+  accRef.value.y = acc.map(v => v.y)
 
-  const tooltips = sensors.map((_, i) => {
-    return {
-      container: document.querySelector(`#areaChartTooltip${i + 1}`),
-      label: document.querySelector(`#areaChartTooltip${i + 1} span`)
-    }
-  });
+  ibiRef.value.x = ibi.map(v => v.x)
+  ibiRef.value.y = ibi.map(v => v.y)
 
-  //areaChart.innerHTML = '';
-  /*chart.createSessionChart(
-    sensors,
-    tags,
-    areaChart,
-    tooltips.map(t => t.container),
-    tooltips.map(t => t.label),
-    null,
-    domainsY,
-    roundIntervals,
-    curves,
-    titles,
-    colors,
-    ticksColors,
-    tagsColor
-  );*/
-}
+  tempRef.value.x = temp.map(v => v.x)
+  tempRef.value.y = temp.map(v => v.y)
 
-const layout = {
-  grid: { rows: 5, columns: 1, pattern: 'independent' },
-  height: 800,
-  showlegend: false,
-  margin: { t: 30 },
-};
-
-const time = Array.from({ length: 100 }, (_, i) => i);
-
-const signals = [
+  signals.value = [
   {
-    y: time.map(t => Math.sin(t / 10) * 2),
-    x: time,
+    y: edaRef.value.y,
+    x: edaRef.value.x,
     type: 'scatter',
     mode: 'lines',
     name: 'EDA',
     yaxis: 'y',
   },
   {
-    y: time.map(t => Math.sin(t / 5) * 1000),
-    x: time,
+    y: bvpRef.value.y,
+    x: bvpRef.value.x,
     type: 'scatter',
     mode: 'lines',
     name: 'BVP',
     yaxis: 'y2',
   },
   {
-    y: time.map(t => Math.sin(t / 8) * 1.5),
-    x: time,
+    y: accRef.value.y,
+    x: accRef.value.x,
     type: 'scatter',
     mode: 'lines',
     name: 'Accelerometer',
     yaxis: 'y3',
   },
   {
-    y: time.map(t => 32 + Math.sin(t / 20) * 2),
-    x: time,
+    y: ibiRef.value.y,
+    x: ibiRef.value.x,
     type: 'scatter',
     mode: 'lines',
-    name: 'Temperature',
+    name: 'HR from IBI (BPM)',
     yaxis: 'y4',
   },
   {
-    y: time.map(t => 32 + Math.sin(t / 20) * 2),
-    x: time,
+    y: tempRef.value.y,
+    x: tempRef.value.x,
     type: 'scatter',
     mode: 'lines',
     name: 'Temperature',
@@ -190,8 +166,17 @@ const signals = [
   }
 ];
 
-const layoutFull = {
-  ...layout,
+}
+
+const layout = ref({
+  grid: { rows: 5, columns: 1, pattern: 'independent' },
+  height: 800,
+  showlegend: false,
+  margin: { t: 30 },
+});
+
+const layoutFull = ref({
+  ...layout.value,
   yaxis:  { title: 'EDA (µS)', domain: [0.80, 1.0] },
   yaxis2: { title: 'BVP', domain: [0.60, 0.80] },
   yaxis3: { title: 'Accel (g)', domain: [0.40, 0.60] },
@@ -200,13 +185,9 @@ const layoutFull = {
   xaxis:  { title: 'Time (s)', anchor: 'y' },
   xaxis2: { title: 'Time (s)', anchor: 'y2' },
   xaxis3: { title: 'Time (s)', anchor: 'y3' },
-  xaxis4: { title: 'Time (s)', anchor: 'y4' }
-};
-
-const config = { responsive: true };
-
-// Expose to parent if needed
-defineExpose({ loadGraph });
+  xaxis4: { title: 'Time (s)', anchor: 'y4' },
+  xaxis5: { title: 'Time (s)', anchor: 'y5' }
+});
 </script>
 
 <style scoped>

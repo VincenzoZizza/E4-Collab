@@ -11,7 +11,7 @@
         </h2>
         <h5 id="selected-date" class="text-secondary">{{ selectedDateLabel }}</h5>
       </div>
-      <DataTable :data="sessionsTable" id="sessionsTableRef" class="dataTable" :columns="columns">
+      <DataTable :data="sessionsTable" id="sessionsTableRef" class="dataTable" :columns="columns" :options="sessionsTableOption">
       </DataTable>
     </div>
     <SessionGraphModal
@@ -20,12 +20,12 @@
       @close="showGraphModal = false"
     />
 
-    <!--<DeleteSessionModal
+    <DeleteSessionModal
       :session-id="selectedSessionId"
       v-if="showDeleteModal"
       @confirm="confirmDelete"
       @cancel="showDeleteModal = false"
-    />-->
+    />
   </div>
 </template>
 
@@ -61,15 +61,33 @@ const datepickerRef = ref(null);
 const sessionsTableRef = ref(null);
 
 const sessionsTable = ref([]);
+const sessionsTableOption = ref({
+    lengthChange: false,
+    searching: false,
+    info: false,
+    responsive: true,
+    autoWidth: false,
+    fixedHeader: {
+      header: true,
+      footer: true
+    },
+    language: {
+      emptyTable: '<div class="text-center my-3">No sessions available</div>',
+      zeroRecords: '<div class="text-center my-3">No sessions available</div>'
+    }})
 
 const columns= [
     { data: "time" ,title: "Time" },
     { data: "dur", title: "Duration" },
     { data: "dev", title: "Device" },
     { data: "id", title: "Session ID" },
-    { data: null, title: "Actions", sortable: false, render: (data, type, row) => {
-        console.log(row)
-        return `<button class="btn-show-dati" data-id="${row.id}">Elimina</button>`;
+    { data: null, title: "Actions", width: "12rem", sortable: false, render: (data, type, row) => {
+        if(userStore.role == 2) {
+          return `<button class="btn-show-dati btn btn-outline-primary shadow-sm" data-id="${row.id}">View Session</button>`;
+        }else if(userStore.role == 0 || userStore.role == 1)
+        {
+          return `<button class="btn-show-dati btn btn-outline-primary shadow-sm" data-id="${row.id}"><i class="fas fa-eye text-primary"></i></button><button class="btn-down-dati btn btn-outline-primary shadow-sm" data-id="${row.id}"><i class="fas fa-download text-success"></i></button><button class="btn-delete-dati btn btn-outline-primary shadow-sm" data-id="${row.id}"><i class="fas fa-trash text-danger"></i></button>`
+        }
     }}
 ]
 
@@ -86,10 +104,17 @@ const deleteSession = (sessionId) => {
 };
 
 const confirmDelete = async () => {
-  await api.deleteSession(selectedSessionId.value);
-  showDeleteModal.value = false;
-  await loadRange(currentRange.value);
+  await api.deleteSession(selectedSessionId.value).then(response => {
+      showDeleteModal.value = false;
+      datepickerRef.value.reload
+      ()
+      loadRange(currentRange.value);
+  })
 };
+
+const downloadFile = async () => {
+  await api.downloadSessionZip(selectedSessionId.value)
+}
 
 const currentRange = ref(null);
 
@@ -101,7 +126,7 @@ const loadRange = async (range) => {
         sessions.value = response.data
         sessions.value.forEach(session => {
             let row = {
-            time: new Date(session.startTimestamp),
+            time: new Date(session.startTimestamp).toLocaleString("it-IT", { timeZone: "UTC" }),
             dur: formatDuration(session.duration),
             dev: session.deviceName,
             id: session.id,
@@ -134,6 +159,23 @@ onMounted(async () => {
         selectedSessionId.value = id;
         showGraphModal.value = true;
       });
+
+      if(userStore.role == 0 || userStore == 1)
+      {
+        $("#sessionsTableRef").on('click', '.btn-down-dati', function () {
+          const id = $(this).data('id');
+          console.log(id);
+          selectedSessionId.value = id;
+          downloadFile()
+        });
+
+        $("#sessionsTableRef").on('click', '.btn-delete-dati', function () {
+          const id = $(this).data('id');
+          console.log(id);
+          showDeleteModal.value = true;
+          selectedSessionId.value = id;
+        });
+      } 
 });
 
 

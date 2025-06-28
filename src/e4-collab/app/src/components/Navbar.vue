@@ -15,10 +15,10 @@
         <div class='collapse navbar-collapse' id='navbarSupportedContent'>
             <ul class='navbar-nav me-auto mb-2 mb-lg-0'>
                 <li class='nav-item'>
-                    <RouterLink to="/dashboard">Dashboard</RouterLink>
+                    <RouterLink class='nav-link' to="/dashboard">Dashboard</RouterLink>
                 </li>
                 <li class='nav-item'>
-                   <RouterLink to='/sessions'>Sessions</RouterLink>
+                   <RouterLink class='nav-link' to='/sessions'>Sessions</RouterLink>
                 </li>
                 <li class='nav-item'>
                    <!-- th:if="${session?.SPRING_SECURITY_CONTEXT?.authentication?.authorities != null && (#lists.contains(session.SPRING_SECURITY_CONTEXT.authentication.authorities.![authority], 'ROLE_EDITOR') || #lists.contains(session.SPRING_SECURITY_CONTEXT.authentication.authorities.![authority], 'ROLE_ADMIN'))}">-->

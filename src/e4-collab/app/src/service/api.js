@@ -7,7 +7,6 @@ import axiosConf from '@/service/axios.js';
 const cryptKey = "irKUdHRurUbEEVCKCcgOnG1CzhQ9whfGwDt4xRyylooSLscpBhD6h5ovvRWNuJCcnhMft0kui6jKwfSFhzTZOEiL2i4CZKj"
 
 export const getUserSessions = async function (username, from, to) {
-			let uri = `/security/users/${username}/sessions`;
 			let params= {};
 			if (from != null) params.from=from.valueOf();
 			if (to != null) params.to=to.valueOf();
@@ -22,22 +21,8 @@ export const getUserSessionsIds = async function (username, from, to) {
 		}
 
 		export const getSession = async function (sessionId) {
-			const response = await fetch(`/api/sessions/${sessionId}`,
-				{
-					method: 'GET',
-					headers: {
-						'Accept': 'application/json',
-					}
-				}
-			);
-
-			if (!response.ok) {
-				let message = `Failed to fetch session ${sessionId}`;
-				if (response.reason) message += `: ${response.reason}`;
-				throw new Error(message);
-			}
-
-			return response.json();
+			const response = await axiosConf.get("/api/sessions/"+sessionId);
+			return response;
 		}
 
 		export const downloadSessionZip = async function (sessionId) {

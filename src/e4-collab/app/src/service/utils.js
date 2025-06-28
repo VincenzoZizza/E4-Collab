@@ -8,20 +8,25 @@ export function getDateRange(timestamp, mode, prevNext) {
                 month: 'numeric',
                 day: 'numeric'
             };
-
-            if (mode === 'year') {
+            
+            if (mode == 4) {
+                range.from = 0;
+                range.to = new Date(date.getFullYear(), date.getMonth(), prevNext ? date.getDate() + 1 : date.getDate(), 23, 59, 59, 999);
+                range.label = `All Sessions`;
+            }
+            else if (mode == 2) {
                 range.from = new Date(prevNext ? date.getFullYear() - 1 : date.getFullYear(), 0, 1);
                 range.to = new Date(prevNext ? date.getFullYear() + 1 : date.getFullYear(), 11, 31);
                 const fromText = range.from.toLocaleDateString('en-GB', dateFormatOptions);
                 const toText = range.to.toLocaleDateString('en-GB', dateFormatOptions);
                 range.label = `${fromText} - ${toText}`;
-            } else if (mode === 'month') {
+            } else if (mode == 1) {
                 range.from = new Date(date.getFullYear(), prevNext ? date.getMonth() - 1 : date.getMonth(), 1);
                 range.to = new Date(date.getFullYear(), prevNext ? date.getMonth() + 2 : date.getMonth() + 1, 0);
                 const fromText = range.from.toLocaleDateString('en-GB', dateFormatOptions);
                 const toText = range.to.toLocaleDateString('en-GB', dateFormatOptions);
                 range.label = `${fromText} - ${toText}`;
-            } else if (mode === 'day') {
+            } else if (mode == 0) {
                 range.from = new Date(date.getFullYear(), date.getMonth(), prevNext ? date.getDate() - 1 : date.getDate(), 0, 0, 0, 0);
                 range.to = new Date(date.getFullYear(), date.getMonth(), prevNext ? date.getDate() + 1 : date.getDate(), 23, 59, 59, 999);
                 range.label = range.from.toLocaleDateString('en-GB', dateFormatOptions);

@@ -4,6 +4,7 @@ import './assets/styles.css'
 import './assets/navbar.css'
 import './assets/datepicker.css'
 import './assets/dashboard.css'
+import './assets/datatables.css'
 import './assets/chart.css'
 import './assets/base.css'
 import "bootstrap/dist/css/bootstrap.min.css"

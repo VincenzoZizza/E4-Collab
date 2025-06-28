@@ -1,6 +1,6 @@
 <template>
   <div id="session-graph">
-    <div
+    <!--<div
       v-for="n in 7"
       :key="n"
       :id="`areaChartTooltip${n}`"
@@ -8,16 +8,22 @@
     >
       <span></span>
     </div>
-    <svg id="areaChart"></svg>
+    <svg id="areaChart"></svg>-->
+
+    <Plotly :data="signals" :layout="layoutFull" :display-mode-bar="false"></Plotly>
   </div>
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref , defineProps } from 'vue';
+import * as d3 from 'd3'
 import * as api from '@/service/api.js';
 import * as chart from '@/service/chart.js';
+import Plotly from '@aurium/vue-plotly'
 
 const sessionGraphRef = ref(null);
+
+const props = defineProps({ sessionId: Number });
 
 function parseSensorData(startTimestamp, data, sampleRate) {
   const trimmedData = data?.trim();
@@ -75,6 +81,10 @@ function parseTAGSData(data) {
   return trimmed.split('\n').map(row => parseInt(row * 1000));
 }
 
+onMounted(() => {
+  loadGraph(props.sessionId);
+})
+
 async function loadGraph(sessionId) {
   const areaChart = document.getElementById('areaChart');
   const session = await api.getSession(sessionId);
@@ -87,6 +97,9 @@ async function loadGraph(sessionId) {
   const tags = parseTAGSData(session.tagsData);
 
   const sensors = [eda, bvp, acc, ibi, temp];
+
+  console.log(sensors)
+
   const defaultDomainsY = [[], [0, 2], [-1000, 1000], [-2, 2], [25, 40]];
   const roundIntervals = [0.3, null, 1, 3, 5];
   const curves = [null, null, d3.curveScale, d3.curveCatmullRom.alpha(0.3), d3.curveCatmullRom.alpha(1)];
@@ -107,8 +120,8 @@ async function loadGraph(sessionId) {
     }
   });
 
-  areaChart.innerHTML = '';
-  chart.createSessionChart(
+  //areaChart.innerHTML = '';
+  /*chart.createSessionChart(
     sensors,
     tags,
     areaChart,
@@ -122,8 +135,75 @@ async function loadGraph(sessionId) {
     colors,
     ticksColors,
     tagsColor
-  );
+  );*/
 }
+
+const layout = {
+  grid: { rows: 5, columns: 1, pattern: 'independent' },
+  height: 800,
+  showlegend: false,
+  margin: { t: 30 },
+};
+
+const time = Array.from({ length: 100 }, (_, i) => i);
+
+const signals = [
+  {
+    y: time.map(t => Math.sin(t / 10) * 2),
+    x: time,
+    type: 'scatter',
+    mode: 'lines',
+    name: 'EDA',
+    yaxis: 'y',
+  },
+  {
+    y: time.map(t => Math.sin(t / 5) * 1000),
+    x: time,
+    type: 'scatter',
+    mode: 'lines',
+    name: 'BVP',
+    yaxis: 'y2',
+  },
+  {
+    y: time.map(t => Math.sin(t / 8) * 1.5),
+    x: time,
+    type: 'scatter',
+    mode: 'lines',
+    name: 'Accelerometer',
+    yaxis: 'y3',
+  },
+  {
+    y: time.map(t => 32 + Math.sin(t / 20) * 2),
+    x: time,
+    type: 'scatter',
+    mode: 'lines',
+    name: 'Temperature',
+    yaxis: 'y4',
+  },
+  {
+    y: time.map(t => 32 + Math.sin(t / 20) * 2),
+    x: time,
+    type: 'scatter',
+    mode: 'lines',
+    name: 'Temperature',
+    yaxis: 'y5',
+  }
+];
+
+const layoutFull = {
+  ...layout,
+  yaxis:  { title: 'EDA (µS)', domain: [0.80, 1.0] },
+  yaxis2: { title: 'BVP', domain: [0.60, 0.80] },
+  yaxis3: { title: 'Accel (g)', domain: [0.40, 0.60] },
+  yaxis4: { title: 'Accel (g)', domain: [0.20, 0.40] },
+  yaxis5: { title: 'Temp (°C)', domain: [0.00, 0.20] },
+  xaxis:  { title: 'Time (s)', anchor: 'y' },
+  xaxis2: { title: 'Time (s)', anchor: 'y2' },
+  xaxis3: { title: 'Time (s)', anchor: 'y3' },
+  xaxis4: { title: 'Time (s)', anchor: 'y4' }
+};
+
+const config = { responsive: true };
 
 // Expose to parent if needed
 defineExpose({ loadGraph });

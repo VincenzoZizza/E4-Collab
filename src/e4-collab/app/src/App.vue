@@ -15,8 +15,8 @@ const userStore = useUserStore();
 <template >
   <Navbar v-if="route.name != 'Login'"/>
   <!--<Datepicker />-->
-  <div class="d-flex justify-content-center align-items-center bg-light">
-  <RouterView v-if="userStore.renderView"/>
+  <div>
+  <RouterView v-if="userStore.renderView" id="main"/>
   </div>
 </template>
 

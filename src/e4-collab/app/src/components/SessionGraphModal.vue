@@ -15,9 +15,10 @@
 </template>
 
 <script setup>
+import { defineProps } from 'vue'
 import SessionGraph from '@/components/SessionGraph.vue';
 
-defineProps({ sessionId: Number });
+const props = defineProps({ sessionId: Number });
 </script>
 
 <style scoped>

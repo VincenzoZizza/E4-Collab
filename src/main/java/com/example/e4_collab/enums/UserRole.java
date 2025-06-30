@@ -15,5 +15,13 @@ public enum UserRole {
 		return value;
 	}
     
+	public static UserRole fromValue(Integer value) {
+	    for (UserRole role : UserRole.values()) {
+	        if (role.getValue().equals(value)) {
+	            return role;
+	        }
+	    }
+	    throw new IllegalArgumentException("Valore non valido: " + value);
+	}
     
 }

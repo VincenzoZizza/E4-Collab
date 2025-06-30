@@ -20,6 +20,11 @@ export const getUserSessionsIds = async function (username, from, to) {
 			return sessions.map(session => session.id);
 		}
 
+		export const logout = async function () {
+			const response = await axiosConf.get("/logout");
+			return response
+		}
+
 		export const getSession = async function (sessionId) {
 			const response = await axiosConf.get("/api/sessions/"+sessionId);
 			return response;
@@ -54,32 +59,14 @@ export const getUserSessionsIds = async function (username, from, to) {
 		}
 
 		export const getUsers = async function () {
-			const response = await fetch(`/api/users`, {
-				method: 'GET',
-				headers: {
-					'Accept': 'application/json',
-				}
-			});
+			const response = await axiosConf.get(`/security/users`)
+			return response;
+		};
 
-			if (!response.ok) {
-				let message = 'Failed to fetch users';
-				if (response.reason) message += `: ${response.reason}`;
-				throw new Error(message);
-			}
-
-			return response.json();
-		}
 
 		export const setUserRole = async function (username, userRole) {
-			const response = await fetch(`/api/users/${username}/role/${userRole}`, {
-				method: 'POST',
-			});
-
-			if (!response.ok) {
-				let message = `Failed to set user role ${userRole}`;
-				if (response.reason) message += `: ${response.reason}`;
-				throw new Error(message);
-			}
+			const response = await axiosConf.post(`/security/users/${username}/role/${userRole}`, {});
+			return response;
 		}
 
 		export const getUserSummary = async function (username) {

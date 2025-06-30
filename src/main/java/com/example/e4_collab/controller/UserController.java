@@ -111,11 +111,12 @@ public class UserController {
         }
     }
 
-    @GetMapping("/api/users")
+    @GetMapping("/users")
     public Iterable<User> getUsers(@AuthenticationPrincipal CustomUserDetail principal) {
         if (principal == null || (principal.getRole() != UserRole.ROLE_ADMIN.getValue() && principal.getRole() != UserRole.ROLE_EDITOR.getValue())){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
+        //TODO togliere dati non necessari
         return userService.getAllUsers();
     }
 
@@ -159,15 +160,15 @@ public class UserController {
         return Map.of("accessToken", userService.refreshAccessToken(user));
     }
 
-    @PostMapping("/api/users/{username}/role/{role}")
+    @PostMapping("/users/{username}/role/{role}")
     public void setUserRole(@AuthenticationPrincipal CustomUserDetail principal, @PathVariable("username") String username, @PathVariable("role") String role) {
-        if(principal != null && !principal.getRole().equals(UserRole.ROLE_ADMIN)) {
+        if(principal != null && principal.getRole() != UserRole.ROLE_ADMIN.getValue()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
 
         UserRole userRole;
         try {
-            userRole = UserRole.valueOf(role);
+            userRole = UserRole.fromValue(Integer.parseInt(role));
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid role");
         }

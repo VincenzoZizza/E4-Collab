@@ -52,7 +52,7 @@ DataTable.use(DataTablesCore);
 
 const sessions = ref([]);
 const selectedDateLabel = ref('');
-const sessionText = ref('Sessions');
+const sessionText = ref('Sessions ' + route.params.username ? route.params.username : "");
 const selectedSessionId = ref(null);
 const showGraphModal = ref(false);
 const showDeleteModal = ref(false);
@@ -106,8 +106,7 @@ const deleteSession = (sessionId) => {
 const confirmDelete = async () => {
   await api.deleteSession(selectedSessionId.value).then(response => {
       showDeleteModal.value = false;
-      datepickerRef.value.reload
-      ()
+      datepickerRef.value.reload()
       loadRange(currentRange.value);
   })
 };
@@ -120,7 +119,7 @@ const currentRange = ref(null);
 
 const loadRange = async (range) => {
   currentRange.value = range;
-  await api.getUserSessions(userStore.username, range.from, range.to).then(response => {
+  await api.getUserSessions(route.params.username ? route.params.username : userStore.username, range.from, range.to).then(response => {
         sessionsTable.value = []
         console.log(response)
         sessions.value = response.data
@@ -135,7 +134,7 @@ const loadRange = async (range) => {
         })
   })
   selectedDateLabel.value = range.label;
-  /*sessionText.value = currentUser.value.username !== username ? `Sessions (${username})` : 'Sessions';*/
+  sessionText.value = route.params.username ? `Sessions (${route.params.username})` : 'Sessions';
 };
 
 const onDateChange = async (selectedDate, view) => {

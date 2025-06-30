@@ -5,7 +5,13 @@
             <img :src='collabLogo' alt='logo'>
         </a>
         <div class='order-sm-last d-inline-flex gap-3'>
-            <!--<div th:replace='~{fragments/common::user-dropdown}'></div>-->
+            <button class='btn btn-secondary dropdown-toggle' type='button' data-bs-toggle='dropdown' aria-expanded='false'>
+                <i class='bi bi-person-circle'></i>
+                <span>{{userStore.username}}</span>
+            </button>
+            <ul class='dropdown-menu'>
+                <li><button class='dropdown-item' @click='logoutNav()'>Logout</button></li>
+            </ul>
             <button class='navbar-toggler' type='button' data-bs-toggle='collapse'
                 data-bs-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false'
                 aria-label='Toggle navigation'>
@@ -21,8 +27,7 @@
                    <RouterLink class='nav-link' to='/sessions'>Sessions</RouterLink>
                 </li>
                 <li class='nav-item'>
-                   <!-- th:if="${session?.SPRING_SECURITY_CONTEXT?.authentication?.authorities != null && (#lists.contains(session.SPRING_SECURITY_CONTEXT.authentication.authorities.![authority], 'ROLE_EDITOR') || #lists.contains(session.SPRING_SECURITY_CONTEXT.authentication.authorities.![authority], 'ROLE_ADMIN'))}">-->
-                    <a class='nav-link' href='/users'>Users</a>
+                    <RouterLink class='nav-link' v-if="userStore.role != 0 || true" to='/users'>Users</RouterLink>
                 </li>
             </ul>
         </div>
@@ -33,7 +38,7 @@
 
 import collabLogo from "@/assets/collab_bianco.svg";7
 import { onMounted, defineEmits } from 'vue'
-import { checkSession } from '@/service/api.js';
+import { checkSession, logout } from '@/service/api.js';
 import { useUserStore } from '@/stores/user.js';
 
 import { useRouter, RouterLink } from 'vue-router'
@@ -65,6 +70,15 @@ onMounted(() => {
         router.push("/");
     })
 })
+
+function logoutNav()
+{
+    logout().then(() => {
+            userStore.setUser("", 0);
+            userStore.setRenderView(true)
+            router.push("/");
+    })
+}
         /*const currentUri = window.location.pathname;
         const navbar = document.getElementById('navbar');
         const navbarLinks = Array.from(navbar.getElementsByClassName('nav-link'));

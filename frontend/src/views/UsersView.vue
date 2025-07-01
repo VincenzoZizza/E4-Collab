@@ -45,9 +45,9 @@ const columns= [
         if(userStore.role == 0)
         {
           return `<select name="role" data-id="${row.username}" class="btn btn-outline-secondary dropdown-toggle dropdown-users-select">
-            <option class="dropdown-item" value="admin">Admin</option>
-            <option class="dropdown-item" value="editor">Editor</option>
-            <option class="dropdown-item" value="user">User</option>
+            <option class="dropdown-item" ${row.role === 'admin' ? 'selected' : ''} value="admin">Admin</option>
+            <option class="dropdown-item" ${row.role === 'editor' ? 'selected' : ''} value="editor">Editor</option>
+            <option class="dropdown-item" ${row.role === 'user' ? 'selected' : ''} value="user">User</option>
         </select>`
         }
         else

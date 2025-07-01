@@ -23,6 +23,32 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+  rest:
+    container_name: rest
+    build:
+      context: ..
+      dockerfile: docker/rest/Dockerfile
+      args:
+        SPRING_PROFILE: backend,mysql
+    environment:
+      - SPRING_PROFILES_ACTIVE=backend,mysql
+      - SERVER_PORT=8090
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+      #- SPRING_DATASOURCE_URL=jdbc:h2:file:./data/h2
+      #- SPRING_DATASOURCE_USERNAME=admin
+      #- SPRING_DATASOURCE_PASSWORD=admin
+    ports:
+      - "8090:8090"
+    networks:
+      - prog_evoluzione
+    volumes:
+      - rest-data:/app/data
+    depends_on:
+      mysql:
+        condition: service_healthy
+      backend:
+        condition: service_started #necessario prima l'avvio di backend per gli inserimenti di test
 
   frontend:
     container_name: frontend
@@ -37,7 +63,7 @@ services:
       #- SPRING_DATASOURCE_USERNAME=admin
       #- SPRING_DATASOURCE_PASSWORD=admin
     ports:
-      - "8080:8080"
+      - "4000:4000"
     networks:
       - prog_evoluzione
     depends_on:
@@ -73,6 +99,8 @@ services:
 
 volumes:
   backend-data:
+    name: backend-data
+  rest-data:
     name: backend-data
   mysql-data:
     name: mysql_data

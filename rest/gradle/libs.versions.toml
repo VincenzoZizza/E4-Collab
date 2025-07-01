@@ -1,0 +1,26 @@
+[versions]
+springBoot = "3.4.2"
+springDependencyManagement = "1.1.7"
+jakartaValidation = "3.0.2"
+mysqlConnector = "8.2.0"
+h2Database = "2.3.232"
+junitPlatform = "1.11.4"
+
+[libraries]
+springBootStarterWeb = { group = "org.springframework.boot", name = "spring-boot-starter-web", version.ref = "springBoot" }
+springBootStarterDataRest = { group = "org.springframework.boot", name = "spring-boot-starter-data-rest", version.ref = "springBoot" }
+springBootStarterDataJPA = { group = "org.springframework.boot", name = "spring-boot-starter-data-jpa", version.ref = "springBoot" }
+springBootStarterThymeleaf = { group = "org.springframework.boot", name = "spring-boot-starter-thymeleaf", version.ref = "springBoot" }
+springBootStarterSecurity = { group = "org.springframework.boot", name = "spring-boot-starter-security", version.ref = "springBoot" }
+springBootStarterValidation = { group = "org.springframework.boot", name = "spring-boot-starter-validation", version.ref = "springBoot" }
+springBootStarterTest = { group = "org.springframework.boot", name = "spring-boot-starter-test", version.ref = "springBoot" }
+
+jakartaValidation = { group = "jakarta.validation", name = "jakarta.validation-api", version.ref = "jakartaValidation" }
+mysqlConnector = { group = "com.mysql", name = "mysql-connector-j", version.ref = "mysqlConnector" }
+h2Database = { group = "com.h2database", name = "h2", version.ref = "h2Database" }
+
+junitPlatform = { group = "org.junit.platform", name = "junit-platform-launcher", version.ref = "junitPlatform" }
+
+[plugins]
+springBoot = { id = "org.springframework.boot", version.ref = "springBoot" }
+springDependencyManagement = { id = "io.spring.dependency-management", version.ref = "springDependencyManagement" }

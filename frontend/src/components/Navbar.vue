@@ -5,13 +5,15 @@
             <img :src='collabLogo' alt='logo'>
         </a>
         <div class='order-sm-last d-inline-flex gap-3'>
-            <button class='btn btn-secondary dropdown-toggle' type='button' data-bs-toggle='dropdown' aria-expanded='false'>
-                <i class='bi bi-person-circle'></i>
-                <span>{{userStore.username}}</span>
-            </button>
-            <ul class='dropdown-menu'>
-                <li><button class='dropdown-item' @click='logoutNav()'>Logout</button></li>
-            </ul>
+            <div class='dropdown' id='user-dropdown'>
+                <button class='btn btn-secondary dropdown-toggle' type='button' data-bs-toggle='dropdown' aria-expanded='false'>
+                    <i class='bi bi-person-circle'></i>
+                    <span>{{userStore.username}}</span>
+                </button>
+                <ul class='dropdown-menu'>
+                    <li><button class='dropdown-item' @click='logoutNav()'>Logout</button></li>
+                </ul>
+            </div>
             <button class='navbar-toggler' type='button' data-bs-toggle='collapse'
                 data-bs-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false'
                 aria-label='Toggle navigation'>
@@ -27,7 +29,7 @@
                    <RouterLink class='nav-link' to='/sessions'>Sessions</RouterLink>
                 </li>
                 <li class='nav-item'>
-                    <RouterLink class='nav-link' v-if="userStore.role != 0 || true" to='/users'>Users</RouterLink>
+                    <RouterLink class='nav-link' v-if="userStore.role != 2" to='/users'>Users</RouterLink>
                 </li>
             </ul>
         </div>
@@ -51,7 +53,7 @@ const emit = defineEmits(['isReady']);
 
 onMounted(() => {
     userStore.setRenderView(false)
-  checkSession().then(response => {
+    checkSession().then(response => {
         if (response.status === 200) {
             userStore.setUser(response.data.username, response.data.role);
             console.log("Login successful");
@@ -65,8 +67,8 @@ onMounted(() => {
         }
     }).catch(error => {
         console.error("Login failed:", error);
+        userStore.setUser("", 0);
         userStore.setRenderView(true)
-        alert("Errore interno.")
         router.push("/");
     })
 })

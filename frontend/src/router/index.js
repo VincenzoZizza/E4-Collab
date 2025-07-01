@@ -3,6 +3,7 @@ import Login from '../views/LoginView.vue'
 import Dashboard from '../views/DashboardView.vue'
 import Session from '../views/SessionView.vue'
 import Users from '../views/UsersView.vue'
+import { useUserStore } from '@/stores/user.js';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -18,7 +19,7 @@ const router = createRouter({
       component: Dashboard,
     },
     {
-      path: '/sessions/:username',
+      path: '/sessions/:username?',
       name: 'Sessions',
       component: Session,
     },
@@ -26,6 +27,7 @@ const router = createRouter({
       path: '/users',
       name: 'Users',
       component: Users,
+      meta: { requiresAuth: true }
     },
     {
       /*path: '/about',
@@ -39,8 +41,15 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
+
+  const userStore = useUserStore();
+
   document.title = to.name;
-  next();
+  if (to.meta.requiresAuth && userStore.role == 2) {
+    next('/dashboard')
+  } else {
+    next()
+  }
 });
 
 export default router

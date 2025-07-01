@@ -1,10 +1,6 @@
 build/
 .gradle
 .gradle/
-gradle/
-!gradle/wrapper/gradle-wrapper.jar
-!gradle/wrapper/gradle-wrapper.properties
-!gradle/libs.versions.toml
 !**/src/main/**/build/
 !**/src/test/**/build/
 docker/static

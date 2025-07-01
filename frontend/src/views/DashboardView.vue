@@ -13,12 +13,14 @@
           <div class="row">
             <div class="col-xl-8 col-lg-7">
               <ChartCard title="Monthly sessions" icon="fa-calendar-days">
-                  <LineChart />
+                  <LineChart v-if="userSummary.sessionsCount != 0"/>
+                  <div v-if="userSummary.sessionsCount == 0"><strong>You have no sessions recorded</strong></div>
               </ChartCard>
             </div>
             <div class="col-xl-4 col-lg-5">
               <ChartCard title="Hourly sessions" icon="fa-moon-over-sun">
-                  <PieChart />
+                  <PieChart v-if="userSummary.sessionsCount != 0"/>
+                  <div v-if="userSummary.sessionsCount == 0"><strong>You have no sessions recorded</strong></div>
               </ChartCard>
             </div>
           </div>

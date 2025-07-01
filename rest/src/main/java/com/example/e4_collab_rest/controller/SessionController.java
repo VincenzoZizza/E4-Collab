@@ -53,7 +53,7 @@ public class SessionController {
     }
 
     @PostMapping
-    public Session uploadSession(@AuthenticationPrincipal CustomUserDetail principal, @RequestBody SessionZipDto sessionZip) {
+    public Session uploadSession(@AuthenticationPrincipal User principal, @RequestBody SessionZipDto sessionZip) {
         if (sessionZip.getStartTimestamp() == null || sessionZip.getEndTimestamp() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Start timestamp and end timestamp cannot be null");
         }

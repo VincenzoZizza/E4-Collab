@@ -1,7 +1,6 @@
 package com.example.e4_collab_rest.security;
 
 import com.example.e4_collab_rest.enums.UserRole;
-import com.example.e4_collab_rest.service.UserDetailsServiceImpl;
 import com.example.e4_collab_rest.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -47,6 +46,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/signup", "/api/app_login").permitAll()
                         .requestMatchers("/collab/**").permitAll()
                         .requestMatchers("/error","/signup","/login", "/logout").permitAll()
+                        .requestMatchers("/swagger-ui/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .csrf(AbstractHttpConfigurer::disable)

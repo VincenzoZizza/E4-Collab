@@ -21,7 +21,6 @@ repositories {
 }
 
 dependencies {
-	implementation("io.swagger:swagger-core:1.6.16")
     implementation(libs.springBootStarterWeb)
     implementation(libs.springBootStarterDataRest)
     implementation(libs.springBootStarterDataJPA)

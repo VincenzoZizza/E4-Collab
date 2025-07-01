@@ -1,0 +1,111 @@
+<div class='table-wrapper' th:fragment='sessions-table'>
+    <table id='sessions-table'></table>
+
+    <!-- datatables -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.dataTables.css" />
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
+
+    <script rel='preload' th:src='@{/js/api.js}'></script>
+    <script th:inline='javascript'>
+        (async () => {
+            const currentUser = /*[[${user}]]*/ '';
+            const isEditorOrAdmin = currentUser.role === 'ROLE_EDITOR' || currentUser.role === 'ROLE_ADMIN';
+
+            const sessionsTable = document.getElementById('sessions-table');
+            sessionsTable.dataTable = new DataTable(sessionsTable, {
+                lengthChange: false,
+                searching: false,
+                info: false,
+                responsive: true,
+                autoWidth: false,
+                fixedHeader: {
+                    header: true,
+                    footer: true
+                },
+                language: {
+                    emptyTable: '<div class="text-center my-3">No sessions available</div>',
+                    zeroRecords: '<div class="text-center my-3">No sessions available</div>'
+                },
+                columns: [
+                    { title: "Time" },
+                    { title: "Duration" },
+                    { title: "Device" },
+                    { title: "Session ID" },
+                    { title: "Actions", sortable: false, width: isEditorOrAdmin ? '10rem' : '12rem' }
+                ]
+            });
+
+            sessionsTable.loadTable = async function (userSessions, onViewButtonClick, onDeleteButtonClick) {
+                const tableData = [];
+                sessionsTable.dataTable.clear().draw();
+
+                for (let i = 0; i < userSessions.length; i++) {
+                    const sessionData = [];
+                    const session = userSessions[i];
+
+                    const sessionStartDate = new Date(session.startTimestamp);
+                    const formattedSessionStartTimestamp = utils.formatDateUTC(sessionStartDate).replace(' GMT', '\nGMT');
+                    const formattedSessionDuration = utils.formatDuration(session.duration);
+                    const sessionDeviceName = session.deviceName;
+                    const sessionId = session.id;
+
+                    const actionsCell = document.createElement('div');
+                    actionsCell.classList.add('actions-cell');
+
+
+                    if (isEditorOrAdmin) {
+                        const viewButton = utils.createActionButton(
+                            ['btn', 'btn-sm', 'shadow-sm'],
+                            ['fas', 'fa-eye', 'text-primary'],
+                            null,
+                            () => onViewButtonClick(sessionId),
+                            "View session"
+                        );
+                        actionsCell.append(viewButton);
+
+                        const downloadButton = utils.createActionButton(
+                            ['btn', 'btn-sm', 'shadow-sm'],
+                            ['fas', 'fa-download', 'text-success'],
+                            null,
+                            () => api.downloadSessionZip(sessionId),
+                            "Download session"
+                        );
+                        actionsCell.append(downloadButton);
+
+                        const deleteButton = utils.createActionButton(
+                            ['btn', 'btn-sm', 'shadow-sm', 'btn-delete'],
+                            ['fas', 'fa-trash', 'text-danger'],
+                            null,
+                            async () => {
+                                const isSessionDeleted = await onDeleteButtonClick(sessionId);
+                                if (isSessionDeleted) {
+                                    await sessionsTable.loadTable(userSessions.filter((session) => session.id !== sessionId), onViewButtonClick, onDeleteButtonClick);
+                                }
+                            },
+                            "Delete session"
+                        );
+                        actionsCell.append(deleteButton);
+                    }
+                    else {
+                        const viewButton = utils.createActionButton(
+                            ['btn', 'btn-outline-primary', 'shadow-sm'],
+                            ['fas', 'fa-eye'],
+                            'View Session',
+                            () => onViewButtonClick(sessionId),
+                        );
+                        actionsCell.append(viewButton);
+                    }
+
+                    sessionData.push(formattedSessionStartTimestamp);
+                    sessionData.push(formattedSessionDuration);
+                    sessionData.push(sessionDeviceName);
+                    sessionData.push(sessionId);
+                    sessionData.push(actionsCell);
+
+                    tableData.push(sessionData);
+                }
+                sessionsTable.dataTable.rows.add(tableData).draw();
+            }
+        })()
+    </script>
+</div>

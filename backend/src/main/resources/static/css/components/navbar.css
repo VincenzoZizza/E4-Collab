@@ -1,0 +1,55 @@
+:root{
+    --color-navbar-bg: var(--collab-blue);
+    --color-navbar-text: white;
+}
+
+
+#navbar {
+    background-color: var(--color-navbar-bg);
+    padding: 0.3rem 2rem;
+
+    .navbar-nav .nav-item .nav-link{
+        &.active{
+            color: var(--color-navbar-text);
+        }
+
+        &:hover{
+            color: color-mix(in srgb, var(--color-navbar-text) 75%, transparent);
+        }
+
+        color: color-mix(in srgb, var(--color-navbar-text) 50%, transparent);
+        font-weight: bold !important;
+    }
+
+    .navbar-brand{
+        padding: 0.25rem;
+        width: 3rem;
+    }
+
+    #user-dropdown {
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
+
+        ul {
+            right: 0;
+            left: auto;
+        }
+    }
+
+    /*:has(#user-dropdown){*/
+    /*    margin-top: 0.5rem;*/
+    /*    margin-bottom: 0.5rem;*/
+
+    /*    #user-dropdown{*/
+    /*        position: absolute;*/
+    /*        right: 0;*/
+    /*        top: 0;*/
+
+    /*        ul{*/
+    /*            right: 0;*/
+    /*            left: auto;*/
+    /*        }*/
+    /*    }*/
+    /*}*/
+}
+

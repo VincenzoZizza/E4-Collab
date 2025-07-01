@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="backend/src/main/java"/>
+	<classpathentry kind="src" path="rest/src/main/java"/>
+	<classpathentry kind="lib" path="backend/build/libs/E4-Collab-1.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="backend/build/libs/E4-Collab-1.0-SNAPSHOT-plain.jar"/>
+	<classpathentry kind="lib" path="backend/gradle/wrapper/gradle-wrapper.jar"/>
+	<classpathentry kind="lib" path="rest/build/libs/E4-Collab-1.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="rest/build/libs/E4-Collab-1.0-SNAPSHOT-plain.jar"/>
+	<classpathentry kind="lib" path="rest/gradle/wrapper/gradle-wrapper.jar"/>
+	<classpathentry kind="output" path="backend/bin/main"/>
+</classpath>

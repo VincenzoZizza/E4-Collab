@@ -1,0 +1,35 @@
+:root {
+    --color-dashboard-accent: var(--collab-blue);
+    --color-dashboard-card-header-bg: var(--color-dashboard-accent);
+    --color-dashboard-card-header-text: var(--collab-white);
+}
+
+#dashboard {
+    .card {
+
+        &.border-left {
+            border-left: 0.25rem solid var(--collab-blue) !important;
+        }
+
+        .card-header {
+            background-color: var(--color-dashboard-card-header-bg);
+            color: var(--color-dashboard-card-header-text);
+        }
+
+        .card-body {
+            align-content: center;
+        }
+
+        .card-header h6,
+        .card-body h5 {
+            font-size: 1.2rem;
+            margin-top: 0;
+            line-height: 1.2;
+            font-weight: 600;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+    }
+}

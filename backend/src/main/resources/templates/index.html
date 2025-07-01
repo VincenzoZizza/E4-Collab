@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html xmlns:th='http://www.thymeleaf.org' lang='en'>
+
+<head th:insert="~{fragments/common::header('Dashboard')}">
+    <title>Dashboard</title>
+</head>
+
+<body>
+    <nav th:replace='~{fragments/common::navbar}'></nav>
+
+    <div id='main' class='d-table d-lg-grid'>
+        <div id='right-content'>
+            <div id="right-body">
+                <div id="dashboard" class="container-fluid pt-3">
+                    <div class="row">
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col mr-2">
+                                            <h5>Sessions count</h5>
+                                            <h5 id="sessions-count-label"></h5>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fa-layer-group fa-regular fa-2x"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col mr-2">
+                                            <h5>Shortest session</h5>
+                                            <h5 id="shortest-session-label"></h5>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fa-hourglass-half fa-regular fa-2x"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col mr-2">
+                                            <h5>Longest session</h5>
+                                            <h5 id="longest-session-label"></h5>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fa-hourglass-end fa-regular fa-2x"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col mr-2">
+                                            <h5>Average session duration</h5>
+                                            <h5 id="average-session-label"></h5>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fa-hourglass fa-regular fa-2x"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-8 col-lg-7">
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 style="margin: 0">Monthly sessions</h6>
+                                    <i class="fa-calendar-days fa-solid fa-2x"></i>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <div class="chart-area" style="width: 100%; height: 25rem">
+
+                                        <div id="areaChartTooltip"
+                                            style="display: none; position: fixed; width: fit-content;height: fit-content;top: 0px;right: 0px; background-color: #f7fdffd9; padding: 0.2rem; border: 1px solid #777676eb; border-radius: 5px; transform: translate(1rem, -50%); z-index: 100">
+                                            <span>
+                                            </span>
+                                        </div>
+                                        <svg id="areaChart" style="width: 100%; height: 100%">
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-4 col-lg-5">
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 style="margin: 0">Hourly sessions</h6>
+                                    <i class="fa-moon-over-sun fa-light fa-2x"></i>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <div class="chart-area" style="width: 100%; height: 25rem">
+                                        <div id="pieChartTooltip"
+                                            style="display: none; position: fixed; width: fit-content;height: fit-content;top: 0px;right: 0px;background-color: #f7fdffd9; padding: 0.2rem; border: 1px solid #777676eb; border-radius: 5px; transform: translate(0rem, -50%); z-index: 100">
+                                            <span>
+                                            </span>
+                                        </div>
+                                        <svg id="pieChart" style="width: 100%; height: 100%">
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style th:inline="css">
+        @import "/css/components/dashboard.css";
+    </style>
+    <script th:src="@{/js/api.js}"></script>
+    <script th:src="@{/js/chart.js}"></script>
+    <script th:src="@{/js/utils.js}"></script>
+    <script th:inline='javascript'>
+        (async () => {
+            const sessionsCountLabel = document.querySelector('#sessions-count-label');
+            const shortestSessionLabel = document.querySelector('#shortest-session-label');
+            const longestSessionLabel = document.querySelector('#longest-session-label');
+            const averageSessionLabel = document.querySelector('#average-session-label');
+
+            const areaChart = document.querySelector('#areaChart');
+            const areaChartTooltipContainer = document.querySelector('#areaChartTooltip');
+            const areaChartTooltipLabel = areaChartTooltipContainer.querySelector('span');
+
+            const pieChart = document.querySelector('#pieChart');
+            const pieChartTooltipContainer = document.querySelector('#pieChartTooltip');
+            const pieChartTooltipLabel = pieChartTooltipContainer.querySelector('span');
+
+            const currentUser = /*[[${user}]]*/ '';
+            const userSummary = await api.getUserSummary(currentUser.username);
+
+            // Labels
+            sessionsCountLabel.textContent = userSummary.sessionsCount;
+            shortestSessionLabel.textContent = `${utils.formatDuration(userSummary.minSessionDuration, 3)}`;
+            longestSessionLabel.textContent = `${utils.formatDuration(userSummary.maxSessionDuration, 3)}`;
+            averageSessionLabel.textContent = `${utils.formatDuration(userSummary.averageSessionDuration, 3)}`;
+
+            // Area chart
+            const today = new Date();
+            const fromMonth = new Date(today.getFullYear() - 1, today.getMonth() + 1, 1);
+            const toMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+
+            const monthlyData = Object.entries(userSummary.monthlySessionsCounts).map(pair => { return { x: new Date(pair[0]), y: pair[1] } }).sort((a, b) => a.x.getTime() - b.x.getTime());
+            let startIndex = monthlyData.findLastIndex(data => data.x <= fromMonth);
+            let endIndex = monthlyData.findIndex(data => data.x >= toMonth);
+
+            startIndex = startIndex > 0 ? startIndex - 1 : 0;
+            endIndex = (endIndex > -1 && endIndex < monthlyData.length - 1) ? endIndex + 1 : monthlyData.length - 1;
+
+            if (endIndex - startIndex < 1) {
+                chart.createAreaChart(monthlyData.slice(startIndex, endIndex), areaChart, areaChartTooltipContainer, areaChartTooltipLabel, [fromMonth, toMonth], [1, 10]);
+            }
+            else {
+                chart.createAreaChart(monthlyData.slice(startIndex, endIndex), areaChart, areaChartTooltipContainer, areaChartTooltipLabel, [fromMonth, toMonth]);
+            }
+
+
+            // Pie chart
+            const hourlyData = [
+                { label: 'Morning', value: userSummary.hourlySessionsCounts.MORNING ?? 0 },
+                { label: 'Afternoon', value: userSummary.hourlySessionsCounts.AFTERNOON ?? 0 },
+                { label: 'Evening', value: userSummary.hourlySessionsCounts.EVENING ?? 0 },
+            ]
+
+            chart.createPieChart(hourlyData, pieChart, pieChartTooltipContainer, pieChartTooltipLabel, [fromMonth, toMonth]);
+        })();
+
+    </script>
+    <div th:replace='~{fragments/common::footer}'></div>
+</body>
+
+</html>

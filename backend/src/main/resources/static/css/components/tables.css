@@ -1,0 +1,168 @@
+:root{
+    --color-table-header-bg: var(--collab-blue);
+    --color-table-header-text: var(--collab-white);
+    --table-rounding-radius: 10px;
+    --table-border-width: 1px;
+    --table-border-color: #0000004d;
+}
+
+
+.table-wrapper {
+    justify-content: center;
+    height: 100%;
+
+    & > div{
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+
+        .dt-layout-row:first-child{
+            display: none !important;
+        }
+
+        .dt-layout-table{
+            overflow-y: auto;
+            display: block !important;
+
+            table {
+                width: 100%;
+                height: 100%;
+                max-width: 100%;
+                max-height: 100%;
+                border-collapse: separate;
+                vertical-align: middle;
+                align-content: center;
+                min-width: 70%;
+                font-size: 1rem;
+
+                thead {
+                    font-size: 1.15rem;
+
+                    th {
+                        position:sticky !important;
+                        top: 0 !important;
+                        background-color: var(--color-table-header-bg);
+                        color: var(--color-table-header-text);
+                        white-space: pre-wrap;
+                        text-align: left;
+                        padding: 0.4rem 1rem;
+                        max-width: 3rem;
+
+                        border-color: transparent;
+                        border-style: solid;
+
+                        &:first-child {
+                            border-top-left-radius: var(--table-rounding-radius);
+                        }
+
+                        &:last-child {
+                            border-top-right-radius: var(--table-rounding-radius);
+                            /* text-align: center; */
+                        }
+                    }
+                }
+
+                tbody {
+                    line-height: 1rem;
+
+                    tr {
+                        td {
+                            white-space: pre-wrap;
+                            /*border: 1px solid var(--color-primary);*/
+                            text-align: left;
+                            padding: 0.4rem;
+                            padding-left: 1rem;
+                            /*max-width: 30%;*/
+                            max-width: 3rem;
+
+                            /*&:nth-child(even) {*/
+                            /*    background-color: #ffffff15;*/
+                            /*}*/
+
+                            /*&:nth-child(odd) {*/
+                            /*    background-color: #00000015;*/
+                            /*}*/
+
+                            /*&:last-child {*/
+                            /*    !*max-width: 100%;*!*/
+                            /*}*/
+
+
+
+                            /*div{*/
+                            /*    vertical-align: middle;*/
+                            /*    text-align: center;*/
+                            /*    align-content: center;*/
+                            /*    !*overflow-x: hidden;*!*/
+                            /*    !*overflow-y: auto;*!*/
+                            /*    height: 1.3rem;*/
+                            /*    min-width: 4rem;*/
+                            /*    !*padding: 1rem 0;*!*/
+                            /*}*/
+
+                            &:first-child {
+                                border-left-color: var(--table-border-color) !important;
+                                border-left-style: solid !important;
+                                border-left-width: var(--table-border-width) !important;
+                            }
+
+                            &:last-child {
+                                border-right-color: var(--table-border-color) !important;
+                                border-right-style: solid !important;
+                                border-right-width: var(--table-border-width) !important;
+                            }
+
+                            .dropdown-menu{
+                                white-space: nowrap;
+                            }
+
+                            &:has(.actions-cell) {
+                                /* text-align: center; */
+                            }
+                            .actions-cell{
+                                display: inline-flex;
+                                justify-items: center;
+                                flex-direction: row;
+                                align-items: center;
+                                white-space: nowrap;
+
+                                *:not(:last-child) {
+                                    margin-right: 0.5rem !important;
+                                }
+                                
+                                .btn-sm{
+                                    border-radius: 6px;
+                                    padding: 4px 8px;
+                                    background-color: #f8f9fc;
+                                    
+                                    &:hover {
+                                        background-color: #e2e6ea;
+                                    }
+                                }
+                            }
+                        }
+
+                        &:last-child {
+                            td{
+                                border-color: var(--table-border-color) !important;
+                                border-bottom-width: var(--table-border-width) !important;
+
+                                &:first-child {
+                                    border-bottom-left-radius: var(--table-rounding-radius);
+                                }
+
+                                &:last-child {
+                                    border-bottom-right-radius: var(--table-rounding-radius);
+                                }
+                            }
+                        }
+
+                        &:nth-child(even) {
+                            background-color: #00000004;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

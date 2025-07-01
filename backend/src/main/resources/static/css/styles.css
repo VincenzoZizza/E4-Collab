@@ -1,0 +1,219 @@
+@import "components/chart.css";
+@import "components/navbar.css";
+@import "components/tables.css";
+
+:root {
+    /*--default-font-size: 16px;*/
+
+    /*@media (min-resolution: 1.25dppx) { font-size: calc(var(--default-font-size) / 1.25); }*/
+    /*@media (min-resolution: 1.50dppx) { font-size: calc(var(--default-font-size) / 1.50); }*/
+    /*@media (min-resolution: 1.75dppx) { font-size: calc(var(--default-font-size) / 1.75); }*/
+    /*@media (min-resolution: 2.00dppx) { font-size: calc(var(--default-font-size) / 2.00); }*/
+    /*@media (min-resolution: 2.25dppx) { font-size: calc(var(--default-font-size) / 2.25); }*/
+    /*@media (min-resolution: 2.50dppx) { font-size: calc(var(--default-font-size) / 2.50); }*/
+    /*@media (min-resolution: 2.75dppx) { font-size: calc(var(--default-font-size) / 2.75); }*/
+    /*@media (min-resolution: 3.00dppx) { font-size: calc(var(--default-font-size) / 3.00); }*/
+
+    --color-primary: #143D59;
+    --color-secondary: #1a1a1a;
+    --color-primary: #1a1a1a;
+    --color-secondary: rgb(234, 234, 234);
+
+    --collab-blue: #143D59;
+    --collab-yellow: #f3b933;
+    --collab-white: #ffffff;
+
+    --color-login-bg: var(--collab-blue);
+    --color-modal-header-bg: var(--collab-blue);
+
+    --bs-primary: var(--collab-blue);
+    --bs-primary-rgb: 20, 61, 89;
+
+    .btn {
+        display: inline-block;
+        padding: var(--bs-btn-padding-y) var(--bs-btn-padding-x);
+        font-family: var(--bs-btn-font-family);
+        font-size: var(--bs-btn-font-size);
+        font-weight: var(--bs-btn-font-weight);
+        line-height: var(--bs-btn-line-height);
+        color: var(--bs-btn-color);
+        text-align: center;
+        text-decoration: none;
+        vertical-align: middle;
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+        border: var(--bs-btn-border-width) solid var(--bs-btn-border-color);
+        border-radius: var(--bs-btn-border-radius);
+        background-color: var(--bs-btn-bg);
+        transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    }
+
+    .btn-primary{
+        --bs-btn-color: #fff;
+        --bs-btn-bg: var(--collab-blue);
+        --bs-btn-border-color: var(--collab-blue);
+        --bs-btn-hover-color: #fff;
+        --bs-btn-hover-bg: #112f44;
+        --bs-btn-hover-border-color: #0f293c;
+        --bs-btn-focus-shadow-rgb: 20, 61, 89;
+        --bs-btn-active-color: #fff;
+        --bs-btn-active-bg: #102f45;
+        --bs-btn-active-border-color: #102f45;
+        --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+        --bs-btn-disabled-color: #fff;
+        --bs-btn-disabled-bg: var(--collab-blue);
+        --bs-btn-disabled-border-color: var(--collab-blue);
+    }
+
+    .btn-outline-primary {
+        --bs-btn-color: var(--collab-blue);
+        --bs-btn-border-color: var(--collab-blue);
+        --bs-btn-hover-color: #fff;
+        --bs-btn-hover-bg: var(--collab-blue);
+        --bs-btn-hover-border-color: var(--collab-blue);
+        --bs-btn-focus-shadow-rgb: 13, 110, 253;
+        --bs-btn-active-color: #fff;
+        --bs-btn-active-bg: #102f45;
+        --bs-btn-active-border-color: #102f45;
+        --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+        --bs-btn-disabled-color: var(--collab-blue);
+        --bs-btn-disabled-bg: transparent;
+        --bs-btn-disabled-border-color: var(--collab-blue);
+        --bs-gradient: none;
+    }
+
+    .btn-check:checked+.btn, .btn.active, .btn.show, .btn:first-child:active, :not(.btn-check)+.btn:active {
+        color: var(--bs-btn-active-color);
+        background-color: var(--bs-btn-active-bg);
+        border-color: var(--bs-btn-active-border-color);
+    }
+    
+    .btn-outline-primary:focus, .btn-outline-primary.focus {
+        box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--collab-blue) 50%, transparent) !important;
+    }
+    
+    .btn:focus, .btn.focus {
+        outline: 0;
+        box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--collab-blue) 50%, transparent) !important;
+    }
+
+    .dropdown-menu {
+        --bs-dropdown-link-active-bg: var(--collab-blue);
+    }
+
+
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+
+    body {
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
+        max-height: 100%;
+        display: grid;
+        grid-template-rows: auto 1fr;
+        font-family: 'Nunito', sans-serif;
+        background-color: #f8f9fc;
+        overflow-x: hidden;
+        overflow-y: auto;
+
+        &:has(#login-card), &:has(#signup-card) {
+            background-color: var(--color-login-bg) !important;
+        }
+    }
+}
+
+#login-card, #signup-card {
+    min-height: 25rem;
+    width: 30rem;
+    height: auto;
+    margin: 1.5rem;
+
+    #collab-logo {
+        width: auto;
+        height: 6rem;
+        margin: 0 auto 1rem auto;
+    }
+
+    .input-group-text {
+        color: var(--collab-blue);
+    }
+}
+
+#main {
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    padding: 1rem;
+    gap: 0;
+
+    #left-content {
+        width: 100%;
+        /* height: 100%; */
+        max-width: 100%;
+        max-height: 100%;
+        overflow: visible;
+        padding-right: 0.75rem;
+        padding-bottom: 1rem;
+        border-right: 1px solid var(--color-secondary);
+
+    }
+
+
+    #right-content {
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
+        max-height: 100%;
+        overflow: hidden;
+        padding-left: 0.75rem;
+
+        display: grid;
+        grid-template-rows: auto 1fr;
+
+        #right-body {
+            overflow-y: auto;
+        }        
+        &:only-child {
+            padding-left: 1.5rem !important;
+            padding-right: 1.5rem !important;
+        }
+    }
+
+    #left-content, #right-content {
+        &:only-child {
+            padding-left: 0;
+            padding-right: 0;
+            grid-column: span 2;
+        }
+    }
+}
+
+.badge.rounded-pill.text-bg-primary {
+    padding: 0.1rem 0.6rem !important;
+    background: var(--collab-blue) !important
+}
+
+.modal-content {
+    border-radius: 8px !important;
+
+    .modal-header {
+        background-color: var(--color-modal-header-bg);
+        color: #ffffff;
+        border-radius: 8px 8px 0 0 !important;
+
+
+        button.close {
+            color: white;
+        }
+    }
+}

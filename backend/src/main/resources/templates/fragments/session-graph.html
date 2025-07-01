@@ -1,0 +1,177 @@
+<div id='session-graph' th:fragment='session-graph'>
+    <div id="areaChartTooltip1"
+        style="display: none; position: fixed; width: fit-content;height: fit-content;top: 0px;right: 0px; background-color: #f7fdffd9; padding: 0.2rem; border: 1px solid #777676eb; border-radius: 5px; transform: translate(1rem, -50%); z-index: 100">
+        <span>
+        </span>
+    </div>
+    <div id="areaChartTooltip2"
+        style="display: none; position: fixed; width: fit-content;height: fit-content;top: 0px;right: 0px; background-color: #f7fdffd9; padding: 0.2rem; border: 1px solid #777676eb; border-radius: 5px; transform: translate(1rem, -50%); z-index: 100">
+        <span>
+        </span>
+    </div>
+    <div id="areaChartTooltip3"
+        style="display: none; position: fixed; width: fit-content;height: fit-content;top: 0px;right: 0px; background-color: #f7fdffd9; padding: 0.2rem; border: 1px solid #777676eb; border-radius: 5px; transform: translate(1rem, -50%); z-index: 100">
+        <span>
+        </span>
+    </div>
+    <div id="areaChartTooltip4"
+        style="display: none; position: fixed; width: fit-content;height: fit-content;top: 0px;right: 0px; background-color: #f7fdffd9; padding: 0.2rem; border: 1px solid #777676eb; border-radius: 5px; transform: translate(1rem, -50%); z-index: 100">
+        <span>
+        </span>
+    </div>
+    <div id="areaChartTooltip5"
+        style="display: none; position: fixed; width: fit-content;height: fit-content;top: 0px;right: 0px; background-color: #f7fdffd9; padding: 0.2rem; border: 1px solid #777676eb; border-radius: 5px; transform: translate(1rem, -50%); z-index: 100">
+        <span>
+        </span>
+    </div>
+    <div id="areaChartTooltip6"
+        style="display: none; position: fixed; width: fit-content;height: fit-content;top: 0px;right: 0px; background-color: #f7fdffd9; padding: 0.2rem; border: 1px solid #777676eb; border-radius: 5px; transform: translate(1rem, -50%); z-index: 100">
+        <span>
+        </span>
+    </div>
+    <div id="areaChartTooltip7"
+        style="display: none; position: fixed; width: fit-content;height: fit-content;top: 0px;right: 0px; background-color: #f7fdffd9; padding: 0.2rem; border: 1px solid #777676eb; border-radius: 5px; transform: translate(1rem, -50%); z-index: 100">
+        <span>
+        </span>
+    </div>
+    <svg id="areaChart">
+    </svg>
+    <script th:src="@{/js/api.js}"></script>
+    <script th:src="@{/js/chart.js}"></script>
+    <script th:inline='javascript'>
+        (async () => {
+
+            function parseSensorData(startTimestamp, data, sampleRate) {
+                const trimmedData = data?.trim();
+                if (!trimmedData) return [];
+
+                const values = trimmedData.split('\n').map(row => parseFloat(row.split(',')[0]))
+                const arr = [...Array(values.length)].map((_, i) => startTimestamp + i * (1000 / sampleRate));
+                return arr.map((timeStamp, i) => { return { x: new Date(timeStamp), y: values[i] } }).sort((a, b) => a.x.getTime() - b.x.getTime());
+            }
+
+            function parseBVPData(startTimestamp, data, sampleRate) {
+                const sensorsData = parseSensorData(startTimestamp, data, sampleRate);
+                sensorsData.forEach(data => data.y = -data.y);
+                return sensorsData;
+            }
+
+            function parseACCData(startTimestamp, data, sampleRate) {
+                const trimmedData = data?.trim();
+                if (!trimmedData) return [];
+
+                const rawValues = trimmedData.split('\n').map(row => { split = row.split(','); return { x: parseFloat(split[0]), y: parseFloat(split[1]), z: parseFloat(split[2]) } });
+
+                const convertToG = value => value * 2 / 128;
+
+                let prevX = 0, prevY = 0, prevZ = 0;
+                let sum = 0;
+                let avg = 0;
+
+
+                const filteredData = rawValues.map((sample, i) => { 
+
+                    // Conversione in g
+                    const xG = convertToG(sample.x);
+                    const yG = convertToG(sample.y);
+                    const zG = convertToG(sample.z);
+
+                    // Calcolo della magnitudine dell'accelerazione
+                    const magnitude = Math.sqrt(xG ** 2 + yG ** 2 + zG ** 2);
+
+                    // Moving average: variazione massima tra i valori successivi
+                    if (i > 0) {
+                        sum += Math.max(
+                            Math.abs(sample.x - prevX),
+                            Math.abs(sample.y - prevY),
+                            Math.abs(sample.z - prevZ)
+                        );
+
+                        if ((i + 1) % 32 === 0) { // Media mobile ogni 32 campioni
+                            avg = 0.9 * avg + 0.1 * (sum / 32);
+                            sum = 0;
+                        }
+                    }
+
+                    // Memorizza i valori per il passo successivo
+                    prevX = sample.x;
+                    prevY = sample.y;
+                    prevZ = sample.z;
+
+                    // Salva i dati elaborati
+                    return avg;
+                });
+
+                return filteredData.map((sum, i) => { return { x: new Date(startTimestamp + i * (1000 / sampleRate)), y: sum } });
+
+            }
+
+            function parseIBISensorData(startTimestamp, data) {
+                const trimmedData = data?.trim();
+                if (!trimmedData) return [];
+
+                return trimmedData.split('\n').map(row => {
+                    const [time, ibi] = row.split(',');
+                    return {
+                        x: new Date(startTimestamp + parseFloat(time) * 1000),
+                        y: 60 / parseFloat(ibi)
+                    }
+                });
+            }
+
+            function parseTAGSData(data) {
+                const trimmedData = data?.trim();
+                if (!trimmedData) return [];
+
+                return trimmedData.split('\n').map(row => parseInt(row * 1000))
+            }
+
+
+            const sessionsGraph = document.getElementById('session-graph');
+
+            sessionsGraph.loadGraph = async function (sessionId) {
+                const areaChart = document.querySelector('#areaChart');
+                // const areaChartTooltipContainer = document.querySelector('#areaChartTooltip');
+                // const areaChartTooltipLabel = areaChartTooltipContainer.querySelector('span');
+
+                const session = await api.getSession(sessionId);
+                console.log(session);
+
+                const edaData = parseSensorData(session.startTimestamp, session.edaData, session.edaSampleRate);
+                const bvpData = parseBVPData(session.startTimestamp, session.bvpData, session.bvpSampleRate);
+                const accData = parseACCData(session.startTimestamp, session.accData, session.accSampleRate);
+                const ibiData = parseIBISensorData(session.startTimestamp, session.ibiData);
+                const tempData = parseSensorData(session.startTimestamp, session.tempData, session.tempSampleRate);
+                const tagsData = parseTAGSData(session.tagsData);
+
+                const sensorsData = [edaData, bvpData, accData, ibiData, tempData];
+                const defaultDomainsY = [...[], [0, 2], [-1000, 1000], [-2, 2], [-0.5, 0.5], [25, 40]];
+                const roundIntervals = [0.3, null, 1, 3, 5];
+                const curves = [null, null, d3.curveScale, d3.curveCatmullRom.alpha(0.3), d3.curveCatmullRom.alpha(1)];
+                const pathsTitles = ['EDA (μS)', 'BVP', 'Accelerometer (g)', 'HR from IBI (BPM)', 'Temperature (°C)'];
+                const pathsColors = ['#76b5c5', '#a0312e', '#755c91', '#da8038', '#87a34b'];
+                const ticksColors = ['#f0ffff', '#fff0f0', '#e4dbf0', '#fff0e5', '#f5fff0'];
+                const tagsColor = '#b50a3b';
+
+                const domainsY = sensorsData.map((data, i) => sensorsData[i]?.length > 0 ? null : defaultDomainsY[i]);
+
+                const fromDate = new Date(session.startTimestamp);
+                const maxDate = new Date(Math.max.apply(null, sensorsData[0].map(x => x.x.getTime())));
+                const toDate = maxDate;//new Date(session.endTimestamp);
+                const domainX = [fromDate, toDate];
+
+                const tooltips = sensorsData.map((session, i) => {
+                    return {
+                        container: document.querySelector(`#areaChartTooltip${i + 1}`),
+                        label: document.querySelector(`#areaChartTooltip${i + 1} span`)
+                    }
+                });
+                const tooltipsContainers = tooltips.map(tooltip => tooltip.container);
+                const tooltipsLabels = tooltips.map(tooltip => tooltip.label);
+
+                areaChart.innerHTML = '';
+                chart.createSessionChart(sensorsData, tagsData, areaChart, tooltipsContainers, tooltipsLabels, null, domainsY, roundIntervals, curves, pathsTitles, pathsColors, ticksColors, tagsColor);
+            }
+        })();
+    </script>
+</div>

@@ -73,13 +73,14 @@ Possibile eseguire i 4 container eseguedo il Docker Compose all'interno della ca
 - Frontend: Aprire un CMD, spostarsi all'interno della cartella backend e dare i seguenti comandi: **npm install** per installare le dipendenze e **npm run dev** per avviare il server di sviluppo.
 - Backend: Eseguire una gradle build nelle cartelle backend/rest e avviare i progetti con una configurazione spring boot di un ide o tramite linea di comando con il comando: **gradle bootRun**.
 
+## Note
+Trattandosi di un progetto di rimodernizzazione il cambio di framework e la sostituzione di librerie utilizzate in passato con altre compatibili con Vue 3 le applicazioni non sono esenti da bug. è inoltre assente inn base dati un pool di dati abbastanza consistente da permettermi durante lo sviluppo test approfonditi su alcune sezioni. Inoltre per mancanza di dati sulla generazione del Bearer token, del suo secret e i dati da inserire nel corpo del token non è stato possibile testare l'applicazione "rest". Il codice è stato convertito chiedendo una prima conversione "grezza" a un intelligenza artificiale per poi andare a inserire all'interno del wrapper stilistico generato la nuova logica comprendente nuove librerie moderne e nuove tecnologie. Ogni chiamata dell'applicazione viene fatta tramite rest api configurate nel frontend tramite un'istanza centralizzata di axios e nel backend tramite i rest controller messi a disposizione da spring web.
 
-
-# 📚 Autore
+## Autore
 
 **Vincenzo Zizza**
 
-[PROGETTO ORIGINALE](https://github.com/collab-uniba/E4-Collab)
-[PROGETTO FORKATO](https://github.com/matteopassaro/Evoluzione_Software/)
+- [PROGETTO ORIGINALE](https://github.com/collab-uniba/E4-Collab)
+- [PROGETTO FORKATO](https://github.com/matteopassaro/Evoluzione_Software/)
 
 *Esame Evoluzione del Software – Università degli Studi di Bari (2025)*

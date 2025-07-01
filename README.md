@@ -62,6 +62,13 @@ Possibile eseguire i 4 container eseguedo il Docker Compose all'interno della ca
 - Spring Security 
 - Lombok
 
+## Struttura dei progetti:
+### Frontend:
+![VLJjZjGm3FoVfoWFiFi8w8v3ui-1aFZuWn1oKsitN9f4SLeEeNrtLhrDI3ejFpCpTcrtx3j95DCqMlKgdNdahhSJXsXSKe7q4vsuawYxFwhhyblxCNZ7Bia2Tzst3pJt58_pnDzVW4VZ-E5CCLNOHmFG9nOnthsB5Cuxy7i_aAsu9SK3nQ72tfASUt_5LlXdxsqouOr_RiI9Wz5FNEgzLB](https://github.com/user-attachments/assets/912ae41c-e67a-4291-8884-4a559885e673)
+
+### Backend:
+![RPF1JiCm38RlVOho0Dk9CnhQBaE8IIiJ4XUKTMPOE4sKE8WnxTrffofZuU-bah_VVstNdaKrGPELwaO_o5AzbKG-SAULD-sdsLFTEZkbRsEzq9HktredOhRriQhxvwBfDFI0mWY6fnKJO_r2stcc1Tj42WKyNVbIfwo7-WZoYb13CRBhWCTE7JHOFAz0zA5PFHNXU-yVtPwxDSKakb (1)](https://github.com/user-attachments/assets/83d4d1aa-144f-47ed-8bdb-a6821edc04c5)
+
 ## Configurazione di avvio per sviluppo
 - Frontend: Aprire un CMD, spostarsi all'interno della cartella backend e dare i seguenti comandi: **npm install** per installare le dipendenze e **npm run dev** per avviare il server di sviluppo.
 - Backend: Eseguire una gradle build nelle cartelle backend/rest e avviare i progetti con una configurazione spring boot di un ide o tramite linea di comando con il comando: **gradle bootRun**.

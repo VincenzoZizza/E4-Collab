@@ -62,6 +62,8 @@ Possibile eseguire i 4 container eseguedo il Docker Compose all'interno della ca
 - Spring Security 
 - Lombok
 
+---
+
 ## Struttura dei progetti:
 ### Frontend:
 ![VLJjZjGm3FoVfoWFiFi8w8v3ui-1aFZuWn1oKsitN9f4SLeEeNrtLhrDI3ejFpCpTcrtx3j95DCqMlKgdNdahhSJXsXSKe7q4vsuawYxFwhhyblxCNZ7Bia2Tzst3pJt58_pnDzVW4VZ-E5CCLNOHmFG9nOnthsB5Cuxy7i_aAsu9SK3nQ72tfASUt_5LlXdxsqouOr_RiI9Wz5FNEgzLB](https://github.com/user-attachments/assets/912ae41c-e67a-4291-8884-4a559885e673)
@@ -69,12 +71,43 @@ Possibile eseguire i 4 container eseguedo il Docker Compose all'interno della ca
 ### Backend:
 ![RPF1JiCm38RlVOho0Dk9CnhQBaE8IIiJ4XUKTMPOE4sKE8WnxTrffofZuU-bah_VVstNdaKrGPELwaO_o5AzbKG-SAULD-sdsLFTEZkbRsEzq9HktredOhRriQhxvwBfDFI0mWY6fnKJO_r2stcc1Tj42WKyNVbIfwo7-WZoYb13CRBhWCTE7JHOFAz0zA5PFHNXU-yVtPwxDSKakb (1)](https://github.com/user-attachments/assets/83d4d1aa-144f-47ed-8bdb-a6821edc04c5)
 
+---
+
 ## Configurazione di avvio per sviluppo
 - Frontend: Aprire un CMD, spostarsi all'interno della cartella backend e dare i seguenti comandi: **npm install** per installare le dipendenze e **npm run dev** per avviare il server di sviluppo.
 - Backend: Eseguire una gradle build nelle cartelle backend/rest e avviare i progetti con una configurazione spring boot di un ide o tramite linea di comando con il comando: **gradle bootRun**.
 
+---
+
+## Cartelle principali
+- docker -> contiene i file DockerImage dei container e il docker-compose che ci permette la costruzione del container.
+- backend -> Server che espone la sua API alla webapp
+- rest -> Server che espone la sua API a servizi esterni o applicazioni esterne
+- frontend -> Webapp in Vue.JS che sfrutta le API del server "backend"
+
+---
+
+## Modifiche rispetto ai progetti di origine
+- Trasformazione del container frontend con Thymeleaf in un container npm con http-server in grado di buildare e hostare la Webapp
+- Separazione degli interessi creando 2 server separati (webapp API e rest API con JWT)
+- Migrazione dei 2 server da Java 17 a Java 21
+- Migrazione dei repository da CrudRepository a JpaRepository
+- Migrazione del frontend da Thymeleaf (renderizzato backend) a Vue.JS, framework per la costruzione di Single Page Application, con aggiunta di tecnologie di routing e store e modernizzazione delle librerie di supporto
+
+---
+
+## Possibile future implimentazioni/modifiche
+- Separazione di alcuni endpoint che vengono chiamati in punti diversi del codice per fini diversi ma sfruttando gli stessi dati. sarebbe possibile alleggerire il carico dei dati inviati e separarli in endpoint differenti.
+- Reingegnerizzazione del frontend sfruttando stili più moderni come Material Design e conseguente adeguamento del server
+- Sottomissione dei dati a un IA che possa elaborarli, analizzarli e fornire una prima interpretazione (possibile anche tramite chatbot)
+- Generazione di file riassuntivi completi di grafici finalizzati alla stampa e alla conservazione cartacea dei dati.
+
+---
+
 ## Note
 Trattandosi di un progetto di rimodernizzazione realizzato tramite cambio di framework e la sostituzione di librerie utilizzate in passato con altre compatibili con Vue 3 le applicazioni non sono esenti da bug. causa scarsità sul database di dati i test su alcune porzioni di codice sono stati eseguiti in modo più superficiale renderdole più soggette a bug. Inoltre per mancanza di dati sulla generazione del Bearer token, del suo secret e i dati da inserire nel corpo del token non è stato possibile testare l'applicazione "rest". Il codice è stato convertito chiedendo un primo parse "grezzo" a un intelligenza artificiale per poi andare a inserire all'interno del wrapper stilistico generato la nuova logica comprendente nuove librerie moderne e nuove tecnologie. Ogni chiamata dell'applicazione viene fatta tramite rest api configurate nel frontend tramite un'istanza centralizzata di axios e nel backend tramite i rest controller messi a disposizione da spring web.
+
+---
 
 ## Autore
 

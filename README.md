@@ -64,6 +64,16 @@ Possibile eseguire i 4 container eseguedo il Docker Compose all'interno della ca
 
 ---
 
+## Comando di avvio del docker
+```Terminale
+docker-compose up --build
+```
+
+## Comando di spegnimento di tutti i container con relativa eliminazione
+```
+docker-compose down
+```
+
 ## Struttura dei progetti:
 ### Frontend:
 ![VLJjZjGm3FoVfoWFiFi8w8v3ui-1aFZuWn1oKsitN9f4SLeEeNrtLhrDI3ejFpCpTcrtx3j95DCqMlKgdNdahhSJXsXSKe7q4vsuawYxFwhhyblxCNZ7Bia2Tzst3pJt58_pnDzVW4VZ-E5CCLNOHmFG9nOnthsB5Cuxy7i_aAsu9SK3nQ72tfASUt_5LlXdxsqouOr_RiI9Wz5FNEgzLB](https://github.com/user-attachments/assets/912ae41c-e67a-4291-8884-4a559885e673)

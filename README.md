@@ -99,6 +99,7 @@ docker-compose down
 
 ## Modifiche rispetto ai progetti di origine
 - Trasformazione del container frontend con Thymeleaf in un container npm con http-server in grado di buildare e hostare la Webapp
+- Aggiunta cifratura password tra frontend e backend (nei progetti precedenti veniva inviata in chiaro)
 - Separazione degli interessi creando 2 server separati (webapp API e rest API con JWT)
 - Migrazione dei 2 server da Java 17 a Java 21
 - Migrazione dei repository da CrudRepository a JpaRepository
